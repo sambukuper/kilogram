@@ -56,7 +56,7 @@ jobs:
       UPLOAD_ARTIFACT: "true"
       ONLY_CACHE: "false"
       PREPARE_PATH: "Telegram/build/prepare/prepare.py"
-      CONFIG: ${{ (startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch') && 'Release' || 'Debug' }}
+      CMAKE_CONFIG: ${{ (startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch') && 'Release' || 'Debug' }}
       TDESKTOP_API_ID: ${{ secrets.TDESKTOP_API_ID || '17349' }}
       TDESKTOP_API_HASH: ${{ secrets.TDESKTOP_API_HASH || '344583e45741c457fe1862106095a5eb' }}
 
@@ -114,7 +114,7 @@ jobs:
           fi
 
           ./configure.sh \
-          -D CMAKE_CONFIGURATION_TYPES=$CONFIG \
+          -D CMAKE_CONFIGURATION_TYPES=$CMAKE_CONFIG \
           -D CMAKE_COMPILE_WARNING_AS_ERROR=ON \
           -D CMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED=NO \
           -D TDESKTOP_API_ID=$TDESKTOP_API_ID \
@@ -123,12 +123,12 @@ jobs:
           -D DESKTOP_APP_DISABLE_CRASH_REPORTS=ON \
           $DEFINE
 
-          cmake --build ../out --config $CONFIG --parallel
+          cmake --build ../out --config $CMAKE_CONFIG --parallel
 
       - name: Move artifact.
         if: env.UPLOAD_ARTIFACT == 'true'
         run: |
-          cd $REPO_NAME/out/$CONFIG
+          cd $REPO_NAME/out/$CMAKE_CONFIG
           mkdir artifact
           mv Kilogram.app artifact/
           mv Updater artifact/
@@ -137,5 +137,5 @@ jobs:
         name: Upload artifact.
         with:
           name: Kilogram-macOS
-          path: ${{ env.REPO_NAME }}/out/$CONFIG/artifact/
+          path: ${{ env.REPO_NAME }}/out/$CMAKE_CONFIG/artifact/
           retention-days: 7

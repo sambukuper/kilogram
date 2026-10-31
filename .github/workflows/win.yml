@@ -51,7 +51,7 @@ jobs:
       UPLOAD_ARTIFACT: "true"
       ONLY_CACHE: "false"
       PREPARE_PATH: "Telegram/build/prepare/prepare.py"
-      CONFIG: ${{ (startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch') && 'Release' || 'Debug' }}
+      CMAKE_CONFIG: ${{ (startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch') && 'Release' || 'Debug' }}
       TDESKTOP_API_ID: ${{ secrets.TDESKTOP_API_ID || '17349' }}
       TDESKTOP_API_HASH: ${{ secrets.TDESKTOP_API_HASH || '344583e45741c457fe1862106095a5eb' }}
 
@@ -151,7 +151,7 @@ jobs:
           cd %TBUILD%\%REPO_NAME%\Telegram
 
           call configure.bat ^
-          -D CMAKE_CONFIGURATION_TYPES=${{ env.CONFIG }} ^
+          -D CMAKE_CONFIGURATION_TYPES=${{ env.CMAKE_CONFIG }} ^
           -D CMAKE_COMPILE_WARNING_AS_ERROR=ON ^
           -D CMAKE_MSVC_DEBUG_INFORMATION_FORMAT= ^
           -D TDESKTOP_API_ID=${{ env.TDESKTOP_API_ID }} ^
@@ -159,12 +159,12 @@ jobs:
           -D DESKTOP_APP_DISABLE_AUTOUPDATE=ON ^
           -D DESKTOP_APP_DISABLE_CRASH_REPORTS=ON
 
-          cmake --build ..\out --config ${{ env.CONFIG }} --parallel
+          cmake --build ..\out --config ${{ env.CMAKE_CONFIG }} --parallel
 
       - name: Move artifact.
         if: env.UPLOAD_ARTIFACT == 'true'
         run: |
-          set OUT=%TBUILD%\%REPO_NAME%\out\${{ env.CONFIG }}
+          set OUT=%TBUILD%\%REPO_NAME%\out\${{ env.CMAKE_CONFIG }}
           mkdir artifact
           move %OUT%\Kilogram.exe artifact/
           move %OUT%\Updater.exe artifact/

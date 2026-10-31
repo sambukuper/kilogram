@@ -58,7 +58,7 @@ jobs:
       UPLOAD_ARTIFACT: "true"
       ONLY_CACHE: "false"
       IMAGE_TAG: tdesktop:centos_env
-      CONFIG: ${{ (startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch') && 'Release' || 'Debug' }}
+      CMAKE_CONFIG: ${{ (startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch') && 'Release' || 'Debug' }}
       TDESKTOP_API_ID: ${{ secrets.TDESKTOP_API_ID || '17349' }}
       TDESKTOP_API_HASH: ${{ secrets.TDESKTOP_API_HASH || '344583e45741c457fe1862106095a5eb' }}
 
@@ -135,14 +135,14 @@ jobs:
         if: env.ONLY_CACHE == 'false'
         run: |
           ARGS=(
-            -D CMAKE_CONFIGURATION_TYPES=$CONFIG
+            -D CMAKE_CONFIGURATION_TYPES=$CMAKE_CONFIG
             -D CMAKE_COMPILE_WARNING_AS_ERROR=ON
             -D TDESKTOP_API_ID=$TDESKTOP_API_ID
             -D TDESKTOP_API_HASH=$TDESKTOP_API_HASH
             -D DESKTOP_APP_DISABLE_AUTOUPDATE=ON
             -D DESKTOP_APP_DISABLE_CRASH_REPORTS=ON
           )
-          if [ "$CONFIG" = "Debug" ]; then
+          if [ "$CMAKE_CONFIG" = "Debug" ]; then
             ARGS+=(
               -D CMAKE_C_FLAGS_DEBUG=-O0\ -fpch-preprocess
               -D CMAKE_CXX_FLAGS_DEBUG=-O0\ -fpch-preprocess
@@ -159,7 +159,7 @@ jobs:
           -u $(id -u) \
           -v $PWD:/usr/src/tdesktop \
           -v ${{ env.CCACHE_DIR }}:/var/cache/ccache \
-          -e CONFIG=$CONFIG \
+          -e CONFIG=$CMAKE_CONFIG \
           -e CCACHE_SLOPPINESS=pch_defines,time_macros \
           $IMAGE_TAG \
           env -u CCACHE_DISABLE /usr/src/tdesktop/Telegram/build/docker/centos_env/build.sh \
@@ -194,7 +194,7 @@ jobs:
       - name: Check.
         if: env.ONLY_CACHE == 'false'
         run: |
-          filePath="out/$CONFIG/Kilogram"
+          filePath="out/$CMAKE_CONFIG/Kilogram"
           if test -f "$filePath"; then
             echo "Build successfully done! :)"
 
@@ -208,7 +208,7 @@ jobs:
       - name: Move artifact.
         if: env.UPLOAD_ARTIFACT == 'true'
         run: |
-          cd out/$CONFIG
+          cd out/$CMAKE_CONFIG
           mkdir artifact
           mv {Kilogram,Updater} artifact/
       - uses: actions/upload-artifact@v7
@@ -216,5 +216,5 @@ jobs:
         name: Upload artifact.
         with:
           name: Kilogram-Linux-x64
-          path: out/$CONFIG/artifact/
+          path: out/$CMAKE_CONFIG/artifact/
           retention-days: 7
