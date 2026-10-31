@@ -1,16 +1,13 @@
-name: MacOS.
+name: macOS.
 
 on:
   push:
-    # Pushes to the canary or private-ci branches run their own workflows.
-    branches-ignore:
-      - public-canary
-      - private-canary
-      - 'private-ci/**'
-      - 'private-ci-*'
+    branches: [dev, main]
+    tags: ['v*']
     paths-ignore:
       - 'docs/**'
       - '**.md'
+      - '!docs/building-mac.md'
       - 'changelog.txt'
       - 'LEGAL'
       - 'LICENSE'
@@ -28,6 +25,7 @@ on:
     paths-ignore:
       - 'docs/**'
       - '**.md'
+      - '!docs/building-mac.md'
       - 'changelog.txt'
       - 'LEGAL'
       - 'LICENSE'
@@ -41,21 +39,26 @@ on:
       - 'Telegram/SourceFiles/platform/win/**'
       - 'Telegram/SourceFiles/platform/linux/**'
       - 'Telegram/configure.bat'
+  workflow_dispatch:
 
 jobs:
 
-  macos:
-    name: MacOS
-    runs-on: ${{ (github.event_name == 'pull_request' || startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/nightly') && 'depot-macos-latest' || 'macos-latest' }}
+  mac:
+    name: macOS
+    runs-on: macos-latest
 
     strategy:
       matrix:
         defines:
           - ""
+
     env:
       UPLOAD_ARTIFACT: "true"
       ONLY_CACHE: "false"
       PREPARE_PATH: "Telegram/build/prepare/prepare.py"
+      CONFIG: ${{ (startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch') && 'Release' || 'Debug' }}
+      TDESKTOP_API_ID: ${{ secrets.TDESKTOP_API_ID || '17349' }}
+      TDESKTOP_API_HASH: ${{ secrets.TDESKTOP_API_HASH || '344583e45741c457fe1862106095a5eb' }}
 
     steps:
       - name: Get repository name.
@@ -99,7 +102,7 @@ jobs:
       - name: Free up some disk space.
         run: find Libraries '(' '(' ! '(' -name '*.a' -o -name '*.h' -o -name '*.hpp' -o -name '*.inc' -o -name '*.cmake' -o -name '*.pc' -o -path '*/include/*' -o -path '*/objects-*' -o -path '*/cache_keys/*' -o -path '*/patches/*' -o -perm +111 ')' -type f ')' -o -empty ')' -delete
 
-      - name: Telegram Desktop build.
+      - name: Kilogram build.
         if: env.ONLY_CACHE == 'false'
         run: |
           cd $REPO_NAME/Telegram
@@ -108,33 +111,31 @@ jobs:
           if [ -n "${{ matrix.defines }}" ]; then
             DEFINE="-D ${{ matrix.defines }}=ON"
             echo Define from matrix: $DEFINE
-            echo "ARTIFACT_NAME=Telegram ${{ matrix.defines }}" >> $GITHUB_ENV
-          else
-            echo "ARTIFACT_NAME=Telegram" >> $GITHUB_ENV
           fi
 
           ./configure.sh \
-          -D CMAKE_CONFIGURATION_TYPES=Debug \
+          -D CMAKE_CONFIGURATION_TYPES=$CONFIG \
           -D CMAKE_COMPILE_WARNING_AS_ERROR=ON \
           -D CMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED=NO \
-          -D TDESKTOP_API_TEST=ON \
-          -D DESKTOP_APP_DISABLE_AUTOUPDATE=OFF \
-          -D DESKTOP_APP_DISABLE_CRASH_REPORTS=OFF \
+          -D TDESKTOP_API_ID=$TDESKTOP_API_ID \
+          -D TDESKTOP_API_HASH=$TDESKTOP_API_HASH \
+          -D DESKTOP_APP_DISABLE_AUTOUPDATE=ON \
+          -D DESKTOP_APP_DISABLE_CRASH_REPORTS=ON \
           $DEFINE
 
-          cmake --build ../out --config Debug --parallel
+          cmake --build ../out --config $CONFIG --parallel
 
       - name: Move artifact.
         if: env.UPLOAD_ARTIFACT == 'true'
         run: |
-          cd $REPO_NAME/out/Debug
+          cd $REPO_NAME/out/$CONFIG
           mkdir artifact
-          mv Telegram.app artifact/
+          mv Kilogram.app artifact/
           mv Updater artifact/
       - uses: actions/upload-artifact@v7
         if: env.UPLOAD_ARTIFACT == 'true'
         name: Upload artifact.
         with:
-          name: ${{ env.ARTIFACT_NAME }}
-          path: ${{ env.REPO_NAME }}/out/Debug/artifact/
-          retention-days: 1
+          name: Kilogram-macOS
+          path: ${{ env.REPO_NAME }}/out/$CONFIG/artifact/
+          retention-days: 7

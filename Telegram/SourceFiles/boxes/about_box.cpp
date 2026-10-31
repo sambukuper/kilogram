@@ -44,7 +44,7 @@ rpl::producer<TextWithEntities> Text() {
 	return tr::lng_about_text2(
 		lt_gpl_link,
 		rpl::single(Ui::Text::Link(
-			"GNU GPL",
+			"GNU AGPL",
 			"https://github.com/sambukuper/kilogram/blob/dev/LICENSE")),
 		lt_github_link,
 		rpl::single(Ui::Text::Link(
