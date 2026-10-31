@@ -382,6 +382,7 @@ public:
 	void setShowGroupReactions(bool val);
 	void setShowPrivateChatReactions(bool val);
 	void setAppIcon(const QString &val);
+	void setCallMuteHotkey(const QString &val);
 	void setSimpleQuotesAndReplies(bool val);
 	void setHideFastShare(bool val);
 	void setReplaceBottomInfoWithIcons(bool val);
@@ -499,6 +500,9 @@ public:
 	[[nodiscard]] rpl::producer<bool> showPrivateChatReactionsChanges() const { return _showPrivateChatReactions.changes(); }
 	[[nodiscard]] rpl::producer<QString> appIconValue() const { return _appIcon.value(); }
 	[[nodiscard]] rpl::producer<QString> appIconChanges() const { return _appIcon.changes(); }
+	[[nodiscard]] const QString &callMuteHotkey() const { return _callMuteHotkey.current(); }
+	[[nodiscard]] rpl::producer<QString> callMuteHotkeyValue() const { return _callMuteHotkey.value(); }
+	[[nodiscard]] rpl::producer<QString> callMuteHotkeyChanges() const { return _callMuteHotkey.changes(); }
 	[[nodiscard]] rpl::producer<bool> simpleQuotesAndRepliesValue() const { return _simpleQuotesAndReplies.value(); }
 	[[nodiscard]] rpl::producer<bool> simpleQuotesAndRepliesChanges() const { return _simpleQuotesAndReplies.changes(); }
 	[[nodiscard]] rpl::producer<bool> hideFastShareValue() const { return _hideFastShare.value(); }
@@ -652,6 +656,7 @@ private:
 	rpl::variable<bool> _showGroupReactions = true;
 	rpl::variable<bool> _showPrivateChatReactions = true;
 	rpl::variable<QString> _appIcon;
+	rpl::variable<QString> _callMuteHotkey;
 	rpl::variable<bool> _simpleQuotesAndReplies = false;
 	rpl::variable<bool> _hideFastShare = false;
 	rpl::variable<bool> _replaceBottomInfoWithIcons = true;

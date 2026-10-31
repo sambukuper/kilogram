@@ -1,0 +1,27 @@
+// This is the source code of Kilogram for Desktop.
+//
+// We do not and cannot prevent the use of our code,
+// but be respectful and credit the original author.
+//
+#pragma once
+
+#include "base/global_shortcuts.h"
+
+namespace AyuFeatures::CallHotkey {
+
+// Observes the configured hotkey in AyuSettings and (re)registers
+// a global shortcut watcher. Call once at application startup.
+void Init();
+
+// Re-reads the hotkey setting and (re)applies the global watcher.
+void ApplySetting();
+
+// Toggles microphone mute of the currently active call
+// (regular or group). Does nothing when there is no call.
+void ToggleMicrophoneMute();
+
+// The shared global shortcut manager used by the feature,
+// also used by the settings recording UI.
+[[nodiscard]] std::shared_ptr<base::GlobalShortcutManager> Manager();
+
+} // namespace AyuFeatures::CallHotkey

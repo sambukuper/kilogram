@@ -12,6 +12,10 @@
 #include "ayu/ui/settings/settings_ayu_utils.h"
 #include "ayu/ui/settings/settings_main.h"
 #include "base/platform/base_platform_info.h"
+#include <memory>
+
+#include "ayu/features/call_hotkey/call_hotkey.h"
+#include "base/global_shortcuts.h"
 #include "core/application.h"
 #include "lang/lang_text_entity.h"
 #include "platform/platform_translate_provider.h"
@@ -272,6 +276,8 @@ void BuildQoLToggles(SectionBuilder &builder, AyuSectionBuilder &ayu) {
 
 	BuildShowPeerId(builder);
 
+	BuildCallHotkey(builder);
+
 	ayu.addSectionDivider();
 
 	builder.addSubsectionTitle(rpl::single(QString("Webview")));
@@ -300,6 +306,93 @@ void BuildQoLToggles(SectionBuilder &builder, AyuSectionBuilder &ayu) {
 		},
 		.toggledWhenAll = false,
 	});
+}
+
+void BuildCallHotkey(SectionBuilder &builder) {
+	if (!base::GlobalShortcutsAvailable()) {
+		return;
+	}
+
+	builder.addSubsectionTitle(tr::ayu_CallHotkeySection());
+
+	struct State {
+		rpl::variable<QString> recordText;
+		rpl::variable<QString> shortcutText;
+		std::shared_ptr<base::GlobalShortcutManager> manager;
+		base::GlobalShortcut shortcut;
+		bool recording = false;
+	};
+	const auto state = std::make_shared<State>();
+	state->recordText = tr::ayu_CallMuteHotkey();
+
+	const auto fillFromManager = [=] {
+		const auto serialized = QByteArray::fromBase64(
+			AyuSettings::getInstance().callMuteHotkey().toUtf8());
+		if (serialized.isEmpty()) {
+			state->shortcut = nullptr;
+			state->shortcutText = QString();
+			return;
+		}
+		state->manager = AyuFeatures::CallHotkey::Manager();
+		state->shortcut = state->manager->shortcutFromSerialized(serialized);
+		state->shortcutText = state->shortcut
+			? state->shortcut->toDisplayString()
+			: QString();
+	};
+	fillFromManager();
+
+	const auto applyAndSave = [=](base::GlobalShortcut shortcut) {
+		AyuSettings::getInstance().setCallMuteHotkey(
+			shortcut
+				? QString::fromLatin1(shortcut->serialize().toBase64())
+				: QString());
+	};
+
+	const auto button = builder.addButton({
+		.id = u"ayu/callMuteHotkey"_q,
+		.title = state->recordText.value(),
+		.st = &st::settingsButtonNoIcon,
+		.label = state->shortcutText.value(),
+	});
+	button->lifetime().add([state] {});
+
+	const auto stopRecording = [=] {
+		state->recording = false;
+		state->recordText = tr::ayu_CallMuteHotkey();
+		state->shortcutText = state->shortcut
+			? state->shortcut->toDisplayString()
+			: QString();
+		if (state->manager) {
+			state->manager->stopRecording();
+		}
+	};
+	const auto startRecording = [=] {
+		if (!base::GlobalShortcutsAllowed()) {
+			return;
+		}
+		state->manager = AyuFeatures::CallHotkey::Manager();
+		state->recording = true;
+		state->recordText = tr::ayu_CallMuteHotkeyRecord();
+		auto progress = crl::guard(button, [=](base::GlobalShortcut shortcut) {
+			state->shortcutText = shortcut->toDisplayString();
+		});
+		auto done = crl::guard(button, [=](base::GlobalShortcut shortcut) {
+			state->shortcut = shortcut;
+			applyAndSave(shortcut);
+			stopRecording();
+		});
+		state->manager->startRecording(std::move(progress), std::move(done));
+	};
+
+	button->addClickHandler([=] {
+		if (state->recording) {
+			stopRecording();
+		} else {
+			startRecording();
+		}
+	});
+
+	builder.addDividerText(tr::ayu_CallMuteHotkeyHint());
 }
 
 const auto kMeta = BuildHelper({

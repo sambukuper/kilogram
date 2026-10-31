@@ -9752,3 +9752,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 "ayu_AboutText1" = "ToS breaking Telegram client based on {api_link}.";
 "ayu_UpdateKilogram" = "Update Kilogram";
 "ayu_UtilityRestartRequired" = "The app will close in 5 seconds.";
+"ayu_CallHotkeySection" = "Calls";
+"ayu_CallMuteHotkey" = "Microphone mute hotkey";
+"ayu_CallMuteHotkeyRecord" = "Press the key combination";
+"ayu_CallMuteHotkeyHint" = "While a call is active, pressing the hotkey toggles your microphone.";
