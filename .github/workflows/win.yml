@@ -161,7 +161,7 @@ jobs:
           -D DESKTOP_APP_DISABLE_AUTOUPDATE=ON ^
           -D DESKTOP_APP_DISABLE_CRASH_REPORTS=ON
 
-          cmake --build ..\out --config ${{ env.CMAKE_CONFIG }} --parallel 2
+          cmake --build ..\out --config ${{ env.CMAKE_CONFIG }} --parallel 1
 
       - name: Move artifact.
         if: env.UPLOAD_ARTIFACT == 'true'
