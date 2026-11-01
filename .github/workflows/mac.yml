@@ -1,8 +1,11 @@
 name: macOS.
 
 on:
+  # Upstream tdesktop's macOS pipeline is currently broken on
+  # public GitHub runners (their own dev branch is red the same
+  # way), so macOS builds run on tags and manual dispatch only.
   push:
-    branches: [dev, main]
+    branches: [main]
     tags: ['v*']
     paths-ignore:
       - 'docs/**'

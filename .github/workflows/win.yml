@@ -151,6 +151,7 @@ jobs:
           cd %TBUILD%\%REPO_NAME%\Telegram
 
           call configure.bat ^
+          -D DESKTOP_APP_SPECIAL_TARGET=win64 ^
           -D CMAKE_CONFIGURATION_TYPES=${{ env.CMAKE_CONFIG }} ^
           -D CMAKE_COMPILE_WARNING_AS_ERROR=ON ^
           -D CMAKE_MSVC_DEBUG_INFORMATION_FORMAT= ^
