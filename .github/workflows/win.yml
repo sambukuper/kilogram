@@ -101,6 +101,13 @@ jobs:
           sdk: ${{ env.SDK }}
           toolset: '14.44'
 
+      - name: Configure pagefile.
+        uses: al-cheb/configure-pagefile-action@v1.4
+        with:
+          minimum-size: 16GB
+          maximum-size: 64GB
+          disk-root: 'C:'
+
       - name: NuGet sources.
         run: |
           nuget sources Disable -Name "Microsoft Visual Studio Offline Packages"
@@ -161,7 +168,7 @@ jobs:
           -D DESKTOP_APP_DISABLE_AUTOUPDATE=ON ^
           -D DESKTOP_APP_DISABLE_CRASH_REPORTS=ON
 
-          cmake --build ..\out --config ${{ env.CMAKE_CONFIG }} --parallel 1
+          cmake --build ..\out --config ${{ env.CMAKE_CONFIG }} --parallel 2
 
       - name: Move artifact.
         if: env.UPLOAD_ARTIFACT == 'true'
