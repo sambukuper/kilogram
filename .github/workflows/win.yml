@@ -77,6 +77,34 @@ jobs:
           submodules: recursive
           path: ${{ env.TBUILD }}\${{ env.REPO_NAME }}
 
+      - name: Free up runner disk space.
+        shell: powershell
+        run: |
+          "Before: {0:N1} GB free" -f ((Get-PSDrive C).Free/1GB)
+          docker system prune -a -f 2>$null
+          $paths = @(
+            'C:\Android',
+            'C:\Users\runneradmin\AppData\Local\Android',
+            'C:\ProgramData\DockerDesktop',
+            'C:\ProgramData\Docker',
+            'C:\hostedtoolcache\windows\CodeQL',
+            'C:\hostedtoolcache\windows\ghc',
+            'C:\hostedtoolcache\windows\PyPy',
+            'C:\hostedtoolcache\windows\Ruby',
+            'C:\hostedtoolcache\windows\go',
+            'C:\hostedtoolcache\windows\Java_Temurin-Hotspot_jdk',
+            'C:\hostedtoolcache\windows\julia',
+            'C:\Program Files\MySQL',
+            'C:\Program Files\PostgreSQL',
+            'C:\Program Files\MongoDB'
+          )
+          foreach ($p in $paths) {
+            if (Test-Path $p) {
+              Remove-Item -Recurse -Force -ErrorAction SilentlyContinue $p
+            }
+          }
+          "After: {0:N1} GB free" -f ((Get-PSDrive C).Free/1GB)
+
       - name: First set up.
         shell: bash
         run: |
@@ -104,7 +132,7 @@ jobs:
       - name: Configure pagefile.
         uses: al-cheb/configure-pagefile-action@v1.4
         with:
-          minimum-size: 16GB
+          minimum-size: 8GB
           maximum-size: 64GB
           disk-root: 'C:'
 
@@ -151,6 +179,27 @@ jobs:
       - name: Free up some disk space.
         shell: bash
         run: find $LibrariesPath '(' '(' ! '(' -name '*.lib' -o -name '*.a' -o -name '*.exe' -o -name '*.h' -o -name '*.hpp' -o -name '*.inc' -o -name '*.cmake' -o -name '*.pc' -o -path '*/include/*' -o -path '*/objects-*' -o -path '*/cache_keys/*' -o -path '*/patches/*' -o -path '*/nv-codec-headers/*' -o -path '*/tdesktop_rust/out/*' ')' -type f ')' -o -empty ')' -delete
+
+      - name: Save libraries cache.
+        if: always()
+        uses: actions/cache/save@v6
+        with:
+          path: |
+            ${{ env.LibrariesPath }}\*
+            !${{ env.LibrariesPath }}\cache_keys
+            !${{ env.LibrariesPath }}\[qQ]t[_-]*
+            ${{ env.LibrariesPath }}\cache_keys\*
+            !${{ env.LibrariesPath }}\cache_keys\[qQ]t[_-]*
+          key: ${{ runner.OS }}-x64-libs-v2-${{ env.CACHE_KEY }}
+
+      - name: Save Qt cache.
+        if: always()
+        uses: actions/cache/save@v6
+        with:
+          path: |
+            ${{ env.LibrariesPath }}\[qQ]t[_-]*
+            ${{ env.LibrariesPath }}\cache_keys\[qQ]t[_-]*
+          key: ${{ runner.OS }}-x64-qt-${{ env.CACHE_KEY }}
 
       - name: Kilogram build.
         if: env.ONLY_CACHE == 'false'
