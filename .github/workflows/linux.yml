@@ -210,7 +210,8 @@ jobs:
         run: |
           cd out/$CMAKE_CONFIG
           mkdir artifact
-          mv {Kilogram,Updater} artifact/
+          mv Kilogram artifact/
+          if [ -f Updater ]; then mv Updater artifact/; fi
       - uses: actions/upload-artifact@v7
         if: env.UPLOAD_ARTIFACT == 'true'
         name: Upload artifact.
