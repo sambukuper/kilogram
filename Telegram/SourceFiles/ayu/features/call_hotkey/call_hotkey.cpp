@@ -43,9 +43,9 @@ std::shared_ptr<base::GlobalShortcutManager> Manager() {
 
 void ToggleMicrophoneMute() {
 	auto &calls = Core::App().calls();
-	if (const auto call = calls->currentCall()) {
+	if (const auto call = calls.currentCall()) {
 		call->setMuted(!call->muted());
-	} else if (const auto group = calls->currentGroupCall()) {
+	} else if (const auto group = calls.currentGroupCall()) {
 		group->setMutedAndUpdate(
 			(group->muted() == Calls::MuteState::Muted)
 				? Calls::MuteState::Active

@@ -1,0 +1,70 @@
+69 unique
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/ui/settings/settings_general.cpp:279: C3861: 'BuildCallHotkey': identifier not found [C:\Users\runneradmin\TBuild\kilogram\out\Telegram\Telegram.
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/ui/context_menu/context_menu.cpp:974: C2039: 'menuIconTTLAny': is not a member of 'st' [C:\Users\runneradmin\TBuild\kilogram\out\Telegram\Telegra
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/ui/context_menu/context_menu.cpp:974: C2065: 'menuIconTTLAny': undeclared identifier [C:\Users\runneradmin\TBuild\kilogram\out\Telegram\Telegram.
+/Users/runneradmin/TBuild/kilogram/Telegram/lib_base/base/object_ptr.h:22: C2259: 'MessageHistory::InnerWidget': cannot instantiate abstract class [C:\Users\runneradmin\TBuild\kilogr
+/Users/runneradmin/TBuild/kilogram/Telegram/lib_ui/ui/widgets/scroll_area.h:145: C2440: '<function-style-cast>': cannot convert from 'object_ptr<MessageHistory::InnerWidget>' to 'QPointer<
+/Users/runneradmin/TBuild/kilogram/Telegram/lib_ui/ui/widgets/scroll_area.h:146: C2672: 'move': no matching overloaded function found [C:\Users\runneradmin\TBuild\kilogram\out\Telegram\Tel
+/Users/runneradmin/TBuild/kilogram/Telegram/lib_ui/ui/widgets/scroll_area.h:147: C3536: 'result': cannot be used before it is initialized [C:\Users\runneradmin\TBuild\kilogram\out\Telegram
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/ui/boxes/donate_qr_box.cpp:148: C2039: 'lng_chat_link_copy': is not a member of 'tr' [C:\Users\runneradmin\TBuild\kilogram\out\Telegram\Tel
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/ui/boxes/donate_qr_box.cpp:148: C3861: 'lng_chat_link_copy': identifier not found [C:\Users\runneradmin\TBuild\kilogram\out\Telegram\Telegr
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/ui/boxes/donate_info_box.cpp:172: C2039: 'IconCurrencyColored': is not a member of 'Ui::Earn' [C:\Users\runneradmin\TBuild\kilogram\out\Teleg
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/ui/boxes/donate_info_box.cpp:172: C3861: 'IconCurrencyColored': identifier not found [C:\Users\runneradmin\TBuild\kilogram\out\Telegram\Teleg
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/ui/boxes/donate_info_box.cpp:169: C2664: 'TextWithEntities Ui::Text::CustomEmojiHelper::paletteDependent(Ui::Text::PaletteDependentEmoji)': c
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/ui/components/saved_music.cpp:183: C2039: 'infoMusicButtonRipple': is not a member of 'st' [C:\Users\runneradmin\TBuild\kilogram\out\Telegram\
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/ui/components/saved_music.cpp:183: C2065: 'infoMusicButtonRipple': undeclared identifier [C:\Users\runneradmin\TBuild\kilogram\out\Telegram\Te
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/ui/components/saved_music.cpp:187: C2039: 'infoMusicButtonPerformer': is not a member of 'st' [C:\Users\runneradmin\TBuild\kilogram\out\Telegr
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/ui/components/saved_music.cpp:187: C2065: 'infoMusicButtonPerformer': undeclared identifier [C:\Users\runneradmin\TBuild\kilogram\out\Telegram
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/ui/components/saved_music.cpp:191: C2039: 'infoMusicButtonTitle': is not a member of 'st' [C:\Users\runneradmin\TBuild\kilogram\out\Telegram\T
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/ui/components/saved_music.cpp:191: C2065: 'infoMusicButtonTitle': undeclared identifier [C:\Users\runneradmin\TBuild\kilogram\out\Telegram\Tel
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/ui/components/saved_music.cpp:255: C2530: 'font': references must be initialized [C:\Users\runneradmin\TBuild\kilogram\out\Telegram\Telegram.v
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/ui/components/saved_music.cpp:257: C3536: 'font': cannot be used before it is initialized [C:\Users\runneradmin\TBuild\kilogram\out\Telegram\T
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/ui/components/saved_music.cpp:257: C2737: 'size': const object must be initialized [C:\Users\runneradmin\TBuild\kilogram\out\Telegram\Telegram
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/ui/components/saved_music.cpp:259: C3536: 'size': cannot be used before it is initialized [C:\Users\runneradmin\TBuild\kilogram\out\Telegram\T
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/ui/components/saved_music.cpp:259: C2660: 'Info::Profile::GetCurrentCover': function does not take 1 arguments [C:\Users\runneradmin\TBuild\ki
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/ui/components/saved_music.cpp:262: C2737: 'pix': const object must be initialized [C:\Users\runneradmin\TBuild\kilogram\out\Telegram\Telegram.
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/ui/components/saved_music.cpp:263: C3536: 'pix': cannot be used before it is initialized [C:\Users\runneradmin\TBuild\kilogram\out\Telegram\Te
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/ui/components/saved_music.cpp:264: C2512: 'Image': no appropriate default constructor available [C:\Users\runneradmin\TBuild\kilogram\out\Tele
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/ui/components/saved_music.cpp:264: C2737: 'img': const object must be initialized [C:\Users\runneradmin\TBuild\kilogram\out\Telegram\Telegram.
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/ui/components/saved_music.cpp:269: C3536: 'img': cannot be used before it is initialized [C:\Users\runneradmin\TBuild\kilogram\out\Telegram\Te
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/ui/components/saved_music.cpp:347: C2039: 'infoMusicButtonPadding': is not a member of 'st' [C:\Users\runneradmin\TBuild\kilogram\out\Telegram
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/ui/components/saved_music.cpp:347: C2065: 'infoMusicButtonPadding': undeclared identifier [C:\Users\runneradmin\TBuild\kilogram\out\Telegram\T
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/ui/components/saved_music.cpp:347: C2440: '<function-style-cast>': cannot convert from 'initializer list' to 'QRect' [C:\Users\runneradmin\TBu
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/ui/components/saved_music.cpp:347: C2737: 'coverRect': const object must be initialized [C:\Users\runneradmin\TBuild\kilogram\out\Telegram\Tel
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/ui/components/saved_music.cpp:348: C3536: 'coverRect': cannot be used before it is initialized [C:\Users\runneradmin\TBuild\kilogram\out\Teleg
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/ui/components/saved_music.cpp:356: C2737: 'top': const object must be initialized [C:\Users\runneradmin\TBuild\kilogram\out\Telegram\Telegram.
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/ui/components/saved_music.cpp:359: C2737: 'coverSize': const object must be initialized [C:\Users\runneradmin\TBuild\kilogram\out\Telegram\Tel
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/ui/components/saved_music.cpp:361: C3536: 'coverSize': cannot be used before it is initialized [C:\Users\runneradmin\TBuild\kilogram\out\Teleg
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/ui/components/saved_music.cpp:361: C2737: 'available': const object must be initialized [C:\Users\runneradmin\TBuild\kilogram\out\Telegram\Tel
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/ui/components/saved_music.cpp:362: C3536: 'available': cannot be used before it is initialized [C:\Users\runneradmin\TBuild\kilogram\out\Teleg
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/ui/components/saved_music.cpp:363: C3536: 'top': cannot be used before it is initialized [C:\Users\runneradmin\TBuild\kilogram\out\Telegram\Te
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/ui/components/saved_music.cpp:365: C2660: 'Ui::RpWidgetBase<QWidget,Ui::RpWidgetDefaultTraits>::moveToLeft': function does not take 1 argument
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/features/call_hotkey/call_hotkey.cpp:46: C2819: type 'Calls::Instance' does not have an overloaded member 'operator ->' [C:\Users\runneradmin\TBuild
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/features/call_hotkey/call_hotkey.cpp:46: C2232: '->Calls::Instance::currentCall': left operand has 'class' type, use '.' [C:\Users\runneradmin\TBuil
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/features/call_hotkey/call_hotkey.cpp:46: C2737: 'call': const object must be initialized [C:\Users\runneradmin\TBuild\kilogram\out\Telegram\Telegram
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/features/call_hotkey/call_hotkey.cpp:46: C3536: 'call': cannot be used before it is initialized [C:\Users\runneradmin\TBuild\kilogram\out\Telegram\T
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/features/call_hotkey/call_hotkey.cpp:48: C2232: '->Calls::Instance::currentGroupCall': left operand has 'class' type, use '.' [C:\Users\runneradmin\
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/features/call_hotkey/call_hotkey.cpp:48: C2737: 'group': const object must be initialized [C:\Users\runneradmin\TBuild\kilogram\out\Telegram\Telegra
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/ayu/features/call_hotkey/call_hotkey.cpp:48: C3536: 'group': cannot be used before it is initialized [C:\Users\runneradmin\TBuild\kilogram\out\Telegram\
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/info/info_controller.h:13: C1083: Cannot open include file: 'info/saved/info_saved_music_common.h': No such file or directory [C:\User
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/dialogs/dialogs_row.cpp:840: C2220: the following warning is treated as an error [C:\Users\runneradmin\TBuild\kilogram\out\Telegram\Tele
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/dialogs/dialogs_widget.cpp:2778: C2039: 'ayu_UpdateAyuGram': is not a member of 'tr' [C:\Users\runneradmin\TBuild\kilogram\out\Telegram\Tele
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/dialogs/dialogs_widget.cpp:2778: C3861: 'ayu_UpdateAyuGram': identifier not found [C:\Users\runneradmin\TBuild\kilogram\out\Telegram\Telegra
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/dialogs/dialogs_widget.cpp:2776: C2672: 'object_ptr<Dialogs::Widget::BottomButton>::create': no matching overloaded function found [C:\Users
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/history/view/history_view_bottom_info.cpp:518: C2678: binary '+': no operator found which takes a left-hand operand of type 'const QString' (or there is n
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/history/view/history_view_bottom_info.cpp:520: C2059: syntax error: ')' [C:\Users\runneradmin\TBuild\kilogram\out\Telegram\Telegram.vcxproj]
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/history/view/history_view_bottom_info.cpp:516: C2737: 'date': const object must be initialized [C:\Users\runneradmin\TBuild\kilogram\out\Telegram\Telegram
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/history/view/history_view_bottom_info.cpp:521: C3536: 'date': cannot be used before it is initialized [C:\Users\runneradmin\TBuild\kilogram\out\Telegram\T
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/history/view/history_view_bottom_info.cpp:521: C2088: built-in operator '+' cannot be applied to an operand of type 'const QString' [C:\Users\runneradmin\
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/history/view/history_view_bottom_info.cpp:521: C2737: 'afterAuthor': const object must be initialized [C:\Users\runneradmin\TBuild\kilogram\out\Telegram\T
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/history/view/history_view_bottom_info.cpp:522: C3536: 'afterAuthor': cannot be used before it is initialized [C:\Users\runneradmin\TBuild\kilogram\out\Tel
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/history/view/history_view_bottom_info.cpp:522: C2737: 'afterAuthorWidth': const object must be initialized [C:\Users\runneradmin\TBuild\kilogram\out\Teleg
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/history/view/history_view_bottom_info.cpp:526: C3536: 'afterAuthorWidth': cannot be used before it is initialized [C:\Users\runneradmin\TBuild\kilogram\ou
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/history/view/history_view_bottom_info.cpp:536: C2088: built-in operator '+' cannot be applied to an operand of type 'QString' [C:\Users\runneradmin\TBuild
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/history/view/history_view_bottom_info.cpp:530: C2737: 'full': const object must be initialized [C:\Users\runneradmin\TBuild\kilogram\out\Telegram\Telegram
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/history/view/history_view_bottom_info.cpp:562: C3536: 'full': cannot be used before it is initialized [C:\Users\runneradmin\TBuild\kilogram\out\Telegram\T
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/info/saved/info_saved_music_provider.h:13: C1083: Cannot open include file: 'info/saved/info_saved_music_common.h': No such file or directory [C:\User
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/info/info_content_widget.cpp:23: C1083: Cannot open include file: 'info/saved/info_saved_music_common.h': No such file or directory [C:\User
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/media/stories/media_stories_controller.cpp:267: C2039: 'ayu_UpdateAyuGram': is not a member of 'tr' [C:\Users\runneradmin\TBuild\kilogram\out\Telegram\Tele
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/media/stories/media_stories_controller.cpp:267: C3861: 'ayu_UpdateAyuGram': identifier not found [C:\Users\runneradmin\TBuild\kilogram\out\Telegram\Telegra
+/Users/runneradmin/TBuild/kilogram/Telegram/SourceFiles/media/stories/media_stories_controller.cpp:265: C2672: 'std::make_unique': no matching overloaded function found [C:\Users\runneradmin\TBuild\kilogram\out\

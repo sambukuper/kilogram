@@ -57,6 +57,10 @@ public:
 
 	[[nodiscard]] Main::Session &session() const;
 
+	HistoryView::GramReadLine *elementGramReadLine() override {
+		return nullptr;
+	}
+
 	[[nodiscard]] not_null<Ui::ChatTheme*> theme() const {
 		return _theme.get();
 	}
