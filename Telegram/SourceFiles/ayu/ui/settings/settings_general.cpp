@@ -158,6 +158,8 @@ void BuildShowPeerId(SectionBuilder &builder) {
 	});
 }
 
+void BuildCallHotkey(SectionBuilder &builder);
+
 void BuildQoLToggles(SectionBuilder &builder, AyuSectionBuilder &ayu) {
 	auto *settings = &AyuSettings::getInstance();
 
