@@ -2354,7 +2354,7 @@ bool HistoryItem::isSponsored() const {
 }
 
 bool HistoryItem::isAyuNoForwards() const {
-	return _flags & MessageFlag::AyuNoForwards;
+	return _flags & MessageFlag::NoForwards;
 }
 
 bool HistoryItem::canLookupMessageAuthor() const {
