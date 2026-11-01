@@ -3096,7 +3096,8 @@ if (NOT DESKTOP_APP_DISABLE_AUTOUPDATE AND NOT build_macstore AND NOT build_wins
         )
     endif()
 
-    if (DESKTOP_APP_SPECIAL_TARGET)
+    option(TDESKTOP_BUILD_PACKER "Build the update packer utility (needs private keys)." OFF)
+    if (DESKTOP_APP_SPECIAL_TARGET AND TDESKTOP_BUILD_PACKER)
         add_executable(Packer)
         init_target(Packer)
 
