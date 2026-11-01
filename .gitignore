@@ -78,3 +78,11 @@ settings.local.json
 # Project specific
 Telegram/SourceFiles/_other/packer_private.h
 .subwork/
+# local tooling
+.winlog.txt
+.errs.py
+.errs.txt
+.fix*.py
+.rebrand.py
+.icons.py
+.icon_preview.png
