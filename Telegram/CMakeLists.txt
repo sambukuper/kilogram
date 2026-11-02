@@ -2734,6 +2734,11 @@ if (WIN32)
     #     $<IF:${release},"Appending compatibility manifest.","Finalizing build.">
     # )
 
+    target_link_libraries(Telegram
+    PRIVATE
+        Dnsapi
+    )
+
     if (QT_VERSION LESS 6 OR DESKTOP_APP_WIN7_BASELINE)
         target_link_libraries(Telegram PRIVATE desktop-app::win_directx_helper)
     endif()
@@ -2971,6 +2976,7 @@ if (MSVC)
     PRIVATE
         # Keep delay-load protection across Qt variants with different imports.
         /IGNORE:4199
+        /DELAYLOAD:dnsapi.dll
         /DELAYLOAD:secur32.dll
         /DELAYLOAD:winmm.dll
         /DELAYLOAD:ws2_32.dll
