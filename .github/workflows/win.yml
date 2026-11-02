@@ -87,13 +87,14 @@ jobs:
             'C:\Users\runneradmin\AppData\Local\Android',
             'C:\ProgramData\DockerDesktop',
             'C:\ProgramData\Docker',
-            'C:\hostedtoolcache\windows\CodeQL',
-            'C:\hostedtoolcache\windows\ghc',
-            'C:\hostedtoolcache\windows\PyPy',
-            'C:\hostedtoolcache\windows\Ruby',
-            'C:\hostedtoolcache\windows\go',
-            'C:\hostedtoolcache\windows\Java_Temurin-Hotspot_jdk',
-            'C:\hostedtoolcache\windows\julia',
+            'C:\ProgramData\Chocolatey',
+            'C:\SeleniumWebDrivers',
+            'C:\vcpkg',
+            'C:\tools',
+            'C:\Program Files\dotnet',
+            'C:\Program Files\LLVM',
+            'C:\Program Files (x86)\LLVM',
+            'C:\Program Files\Microsoft SQL Server',
             'C:\Program Files\MySQL',
             'C:\Program Files\PostgreSQL',
             'C:\Program Files\MongoDB'
@@ -102,6 +103,9 @@ jobs:
             if (Test-Path $p) {
               Remove-Item -Recurse -Force -ErrorAction SilentlyContinue $p
             }
+          }
+          if (Test-Path 'C:\hostedtoolcache\windows') {
+            Get-ChildItem 'C:\hostedtoolcache\windows' -Exclude 'Python' | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
           }
           "After: {0:N1} GB free" -f ((Get-PSDrive C).Free/1GB)
 
@@ -133,7 +137,7 @@ jobs:
         uses: al-cheb/configure-pagefile-action@v1.4
         with:
           minimum-size: 8GB
-          maximum-size: 64GB
+          maximum-size: 16GB
           disk-root: 'C:'
 
       - name: NuGet sources.
