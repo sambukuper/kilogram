@@ -407,7 +407,7 @@ void Panel::initControls() {
 
 	const auto peerId = _user->id.bare;
 	const auto initialVolume = AyuSettings::getInstance().peerCallVolume(peerId);
-	_peerVolumeSlider = base::make_unique_q<Ayu::CallVolumeSlider>(widget());
+	_peerVolumeSlider = base::make_unique_q<::Ayu::CallVolumeSlider>(widget());
 	_peerVolumeSlider->setVolume(initialVolume);
 	if (_call) {
 		_call->setPlaybackVolume(initialVolume);
@@ -1145,11 +1145,30 @@ void Panel::showDevicesMenu(
 	controlsShownForce(true);
 	updateControlsShown();
 
+	const auto hasAudio = [&] {
+		for (const auto &item : types) {
+			if (item.type == Webrtc::DeviceType::Capture) {
+				return true;
+			}
+		}
+		return false;
+	}();
+	const auto noiseToggle = (hasAudio && _call)
+		? std::make_optional(NoiseSuppressionToggle{
+			.enabled = _call->noiseSuppression(),
+			.toggled = [=](bool enabled) {
+				_call->setNoiseSuppression(enabled);
+				AyuSettings::getInstance().setCallNoiseSuppression(enabled);
+			},
+		})
+		: std::nullopt;
+
 	_devicesMenu = MakeDeviceSelectionMenu(
 		widget(),
 		&Core::App().mediaDevices(),
 		std::move(types),
-		chosen);
+		chosen,
+		noiseToggle);
 	_devicesMenu->setForcedVerticalOrigin(
 		Ui::PopupMenu::VerticalOrigin::Bottom);
 	_devicesMenu->popup(button->mapToGlobal(QPoint())

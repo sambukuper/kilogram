@@ -226,13 +226,79 @@ void AddDeviceSelection(
 			selected));
 }
 
+class CheckboxItem final : public Ui::Menu::ItemBase {
+public:
+	CheckboxItem(
+		not_null<Ui::Menu::Menu*> parent,
+		const style::Menu &st,
+		const QString &text,
+		bool checked,
+		Fn<void(bool)> toggled);
+
+	not_null<QAction*> action() const override;
+	bool isEnabled() const override;
+
+private:
+	int contentHeight() const override;
+
+	const style::Menu &_st;
+	const base::unique_qptr<Ui::Checkbox> _checkbox;
+	const not_null<QAction*> _dummyAction;
+
+};
+
+CheckboxItem::CheckboxItem(
+	not_null<Ui::Menu::Menu*> parent,
+	const style::Menu &st,
+	const QString &text,
+	bool checked,
+	Fn<void(bool)> toggled)
+: Ui::Menu::ItemBase(parent, st)
+, _st(st)
+, _checkbox(base::make_unique_q<Ui::Checkbox>(
+	this,
+	text,
+	checked,
+	st::groupCallCheckbox))
+, _dummyAction(Ui::CreateChild<QAction>(parent)) {
+	setPointerCursor(false);
+	fitToMenuWidth();
+	_checkbox->moveToLeft(st.itemPadding.left(), st.itemPadding.top());
+	_checkbox->checkedChanges() | rpl::on_next(toggled, lifetime());
+	sizeValue(
+	) | rpl::on_next([=](const QSize &size) {
+		const auto availWidth = size.width()
+			- _st.itemPadding.left()
+			- _st.itemPadding.right();
+		_checkbox->resizeToWidth(availWidth);
+	}, lifetime());
+	setActionTriggered([=] {
+		_checkbox->setChecked(!_checkbox->checked());
+	});
+}
+
+not_null<QAction*> CheckboxItem::action() const {
+	return _dummyAction;
+}
+
+bool CheckboxItem::isEnabled() const {
+	return true;
+}
+
+int CheckboxItem::contentHeight() const {
+	return _st.itemPadding.top()
+		+ _checkbox->height()
+		+ _st.itemPadding.bottom();
+}
+
 } // namespace
 
 base::unique_qptr<Ui::PopupMenu> MakeDeviceSelectionMenu(
 		not_null<Ui::RpWidget*> parent,
 		not_null<Webrtc::Environment*> environment,
 		std::vector<DeviceSelection> types,
-		Fn<void(Webrtc::DeviceType, QString)> choose) {
+		Fn<void(Webrtc::DeviceType, QString)> choose,
+		std::optional<NoiseSuppressionToggle> noiseSuppression) {
 	auto result = base::make_unique_q<Ui::PopupMenu>(
 		parent,
 		st::callDeviceSelectionMenu);
@@ -245,6 +311,17 @@ base::unique_qptr<Ui::PopupMenu> MakeDeviceSelectionMenu(
 			choose(type, id);
 		};
 		AddDeviceSelection(raw, environment, std::move(type), selected);
+	}
+	if (noiseSuppression) {
+		if (!raw->empty()) {
+			raw->addSeparator();
+		}
+		raw->addAction(base::make_unique_q<CheckboxItem>(
+			raw->menu(),
+			raw->st().menu,
+			tr::lng_group_call_noise_suppression(tr::now),
+			noiseSuppression->enabled,
+			noiseSuppression->toggled));
 	}
 	return result;
 }

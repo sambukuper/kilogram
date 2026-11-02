@@ -267,6 +267,7 @@ Call::Call(
 	}
 	setupMediaDevices();
 	setPlaybackVolume(AyuSettings::getInstance().peerCallVolume(_user->id.bare));
+	_noiseSuppression = AyuSettings::getInstance().callNoiseSuppression();
 	setupOutgoingVideo();
 }
 
@@ -311,6 +312,7 @@ Call::Call(
 		StartVideoState(video))) {
 	startWaitingTrack();
 	setPlaybackVolume(AyuSettings::getInstance().peerCallVolume(_user->id.bare));
+	_noiseSuppression = AyuSettings::getInstance().callNoiseSuppression();
 	setupOutgoingVideo();
 }
 
@@ -1175,7 +1177,7 @@ void Call::createAndStartController(const MTPDphoneCall &call) {
 			.dataSaving = tgcalls::DataSaving::Never,
 			.enableP2P = call.is_p2p_allowed(),
 			.enableAEC = false,
-			.enableNS = true,
+			.enableNS = _noiseSuppression,
 			.enableAGC = true,
 			.enableVolumeControl = true,
 			.maxApiLayer = protocol.vmax_layer().v,
@@ -1751,6 +1753,17 @@ int Call::playbackVolume() const {
 
 std::shared_ptr<std::atomic<float>> Call::playbackGainAtomic() const {
 	return _playbackGain;
+}
+
+void Call::setNoiseSuppression(bool enabled) {
+	_noiseSuppression = enabled;
+	if (_instance) {
+		_instance->setIsNoiseSuppressionEnabled(enabled);
+	}
+}
+
+bool Call::noiseSuppression() const {
+	return _noiseSuppression;
 }
 
 Call::~Call() {

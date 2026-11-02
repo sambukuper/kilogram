@@ -384,6 +384,7 @@ public:
 	void setAppIcon(const QString &val);
 	void setCallMuteHotkey(const QString &val);
 	void setCallMuteSoundEnabled(bool val);
+	void setCallNoiseSuppression(bool val);
 	void setCallMuteSoundVolume(int val);
 	void setPeerCallVolume(uint64_t peerId, int val);
 	[[nodiscard]] int peerCallVolume(uint64_t peerId) const;
@@ -508,6 +509,9 @@ public:
 	[[nodiscard]] rpl::producer<QString> callMuteHotkeyValue() const { return _callMuteHotkey.value(); }
 	[[nodiscard]] rpl::producer<QString> callMuteHotkeyChanges() const { return _callMuteHotkey.changes(); }
 	[[nodiscard]] bool callMuteSoundEnabled() const { return _callMuteSoundEnabled.current(); }
+	[[nodiscard]] bool callNoiseSuppression() const { return _callNoiseSuppression.current(); }
+	[[nodiscard]] rpl::producer<bool> callNoiseSuppressionValue() const { return _callNoiseSuppression.value(); }
+	[[nodiscard]] rpl::producer<bool> callNoiseSuppressionChanges() const { return _callNoiseSuppression.changes(); }
 	[[nodiscard]] rpl::producer<bool> callMuteSoundEnabledValue() const { return _callMuteSoundEnabled.value(); }
 	[[nodiscard]] rpl::producer<bool> callMuteSoundEnabledChanges() const { return _callMuteSoundEnabled.changes(); }
 	[[nodiscard]] int callMuteSoundVolume() const { return _callMuteSoundVolume.current(); }
@@ -668,6 +672,7 @@ private:
 	rpl::variable<QString> _appIcon;
 	rpl::variable<QString> _callMuteHotkey;
 	rpl::variable<bool> _callMuteSoundEnabled = true;
+	rpl::variable<bool> _callNoiseSuppression = true;
 	rpl::variable<int> _callMuteSoundVolume = 100;
 	std::map<uint64_t, int> _peerCallVolumes;
 	rpl::variable<bool> _simpleQuotesAndReplies = false;

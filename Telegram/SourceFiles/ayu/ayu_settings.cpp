@@ -717,6 +717,12 @@ void AyuSettings::setCallMuteSoundEnabled(bool val) {
 	save();
 }
 
+void AyuSettings::setCallNoiseSuppression(bool val) {
+	if (_callNoiseSuppression.current() == val) return;
+	_callNoiseSuppression = val;
+	save();
+}
+
 void AyuSettings::setPeerCallVolume(uint64_t peerId, int val) {
 	const auto clamped = std::clamp(val, 0, 200);
 	if (_peerCallVolumes[peerId] == clamped) return;
@@ -1139,6 +1145,7 @@ void to_json(nlohmann::json &j, const AyuSettings &s) {
 		{"appIcon", s._appIcon.current()},
 		{"callMuteHotkey", s._callMuteHotkey.current()},
 		{"callMuteSoundEnabled", s._callMuteSoundEnabled.current()},
+		{"callNoiseSuppression", s._callNoiseSuppression.current()},
 		{"callMuteSoundVolume", s._callMuteSoundVolume.current()},
 		{"simpleQuotesAndReplies", s._simpleQuotesAndReplies.current()},
 		{"hideFastShare", s._hideFastShare.current()},
@@ -1263,6 +1270,7 @@ void from_json(const nlohmann::json &j, AyuSettings &s) {
 	s._appIcon = j.value("appIcon", defaults._appIcon.current());
 	s._callMuteHotkey = j.value("callMuteHotkey", defaults._callMuteHotkey.current());
 	s._callMuteSoundEnabled = j.value("callMuteSoundEnabled", defaults._callMuteSoundEnabled.current());
+	s._callNoiseSuppression = j.value("callNoiseSuppression", defaults._callNoiseSuppression.current());
 	s._callMuteSoundVolume = j.value("callMuteSoundVolume", defaults._callMuteSoundVolume.current());
 	s._simpleQuotesAndReplies = j.value("simpleQuotesAndReplies", defaults._simpleQuotesAndReplies.current());
 	s._hideFastShare = j.value("hideFastShare", defaults._hideFastShare.current());

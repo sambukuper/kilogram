@@ -60,6 +60,10 @@ struct CallSignalBars;
 struct CallBodyLayout;
 } // namespace style
 
+namespace Ayu {
+class CallVolumeSlider;
+} // namespace Ayu
+
 namespace Calls {
 
 class Window;
@@ -71,10 +75,6 @@ class RateCall;
 class EndCloseButton;
 struct DeviceSelection;
 struct ConferencePanelMigration;
-
-namespace Ayu {
-class CallVolumeSlider;
-} // namespace Ayu
 
 class Panel final
 	: public base::has_weak_ptr
@@ -225,7 +225,7 @@ private:
 	bool _rateNameSwapped = false;
 	base::unique_qptr<Ui::RpWidget> _conferenceParticipants;
 	base::unique_qptr<Ui::RpWidget> _fingerprint;
-	base::unique_qptr<Ayu::CallVolumeSlider> _peerVolumeSlider;
+	base::unique_qptr<::Ayu::CallVolumeSlider> _peerVolumeSlider;
 	base::unique_qptr<Ui::PaddingWrap<Ui::FlatLabel>> _remoteAudioMute;
 	base::unique_qptr<Ui::PaddingWrap<Ui::FlatLabel>> _remoteLowBattery;
 	std::unique_ptr<Userpic> _userpic;
