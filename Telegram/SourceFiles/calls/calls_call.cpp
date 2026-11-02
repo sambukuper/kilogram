@@ -541,7 +541,7 @@ rpl::producer<Webrtc::DeviceResolvedId> Call::captureMuteDeviceId() {
 }
 
 void Call::setMuted(bool mute) {
-	if (_muted == mute) {
+	if (muted() == mute) {
 		return;
 	}
 	_muted = mute;
