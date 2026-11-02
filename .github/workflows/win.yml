@@ -137,7 +137,7 @@ jobs:
         uses: al-cheb/configure-pagefile-action@v1.4
         with:
           minimum-size: 8GB
-          maximum-size: 16GB
+          maximum-size: 32GB
           disk-root: 'C:'
 
       - name: NuGet sources.

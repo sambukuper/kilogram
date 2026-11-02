@@ -385,6 +385,7 @@ void start() {
 	const auto appUserModelId = AppUserModelId::Id();
 	SetCurrentProcessExplicitAppUserModelID(appUserModelId.c_str());
 	LOG(("AppUserModelID: %1").arg(appUserModelId));
+	AppUserModelId::ValidateShortcut();
 }
 
 void finish() {

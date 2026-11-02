@@ -22,6 +22,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "base/platform/base_platform_info.h"
 #include "core/application.h"
 #include "core/sandbox.h"
+#include "core/version.h"
 #include "lang/lang_keys.h"
 #include "storage/localstorage.h"
 #include "ui/widgets/popup_menu.h"
@@ -136,8 +137,16 @@ void UpdateTaskbarRelaunchIcon(HWND hWnd) {
 
 	setString(AppUserModelId::Key(), AppUserModelId::Id());
 	setString(
+		PKEY_AppUserModel_RelaunchCommand,
+		L'"' + AppUserModelId::MyExecutablePath() + L'"');
+	setString(
+		PKEY_AppUserModel_RelaunchDisplayNameResource,
+		AppName.utf16().toStdWString());
+	setString(
 		PKEY_AppUserModel_RelaunchIconResource,
-		QDir::toNativeSeparators(AyuAssets::appIcoPath()).toStdWString()
+		(QFile::exists(AyuAssets::appIcoPath())
+			? QDir::toNativeSeparators(AyuAssets::appIcoPath()).toStdWString()
+			: AppUserModelId::MyExecutablePath())
 			+ L",0");
 	propertyStore->Commit();
 }
@@ -708,6 +717,8 @@ void MainWindow::initHook() {
 	if (!_hWnd) {
 		return;
 	}
+
+	UpdateTaskbarRelaunchIcon(_hWnd);
 
 	WTSRegisterSessionNotification(_hWnd, NOTIFY_FOR_THIS_SESSION);
 

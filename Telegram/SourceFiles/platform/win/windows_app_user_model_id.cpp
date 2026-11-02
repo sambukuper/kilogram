@@ -352,6 +352,12 @@ bool checkInstalled(QString path = {}) {
 }
 
 bool ValidateShortcut() {
+	if (!SUCCEEDED(CoInitialize(nullptr))) {
+		return false;
+	}
+	const auto coGuard = gsl::finally([] {
+		CoUninitialize();
+	});
 	QString path = systemShortcutPath();
 	if (path.isEmpty() || cExeName().isEmpty()) {
 		return false;
