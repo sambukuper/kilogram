@@ -217,5 +217,5 @@ jobs:
         name: Upload artifact.
         with:
           name: Kilogram-Linux-x64
-          path: out/$CMAKE_CONFIG/artifact/
+          path: out/${{ env.CMAKE_CONFIG }}/artifact/
           retention-days: 7
