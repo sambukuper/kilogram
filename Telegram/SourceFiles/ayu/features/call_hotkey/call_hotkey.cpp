@@ -54,14 +54,6 @@ void PlayMuteSound(bool muted) {
 		}
 		static std::unique_ptr<Media::Audio::Track> activatedTrack;
 		static std::unique_ptr<Media::Audio::Track> mutedTrack;
-		static auto hooked = false;
-		if (!hooked) {
-			hooked = true;
-			Core::App().lifetime().add([] {
-				activatedTrack.reset();
-				mutedTrack.reset();
-			});
-		}
 		auto &track = muted ? mutedTrack : activatedTrack;
 		if (!track) {
 			track = Media::Audio::Current().createTrack();
