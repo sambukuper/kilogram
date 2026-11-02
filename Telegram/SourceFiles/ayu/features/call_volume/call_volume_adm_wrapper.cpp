@@ -6,6 +6,7 @@
 // Copyright @Radolyn, 2026
 #include "ayu/features/call_volume/call_volume_adm_wrapper.h"
 
+#include <modules/audio_device/include/audio_device.h>
 #include <api/make_ref_counted.h>
 #include <cmath>
 #include <cstring>

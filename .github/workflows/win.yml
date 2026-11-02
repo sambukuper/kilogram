@@ -81,7 +81,12 @@ jobs:
         shell: powershell
         run: |
           "Before: {0:N1} GB free" -f ((Get-PSDrive C).Free/1GB)
-          docker system prune -a -f 2>$null
+          try {
+            $docker = Get-Service -Name docker -ErrorAction SilentlyContinue
+            if ($docker -and $docker.Status -eq 'Running') {
+              docker system prune -a -f 2>&1 | Out-Null
+            }
+          } catch {}
           $paths = @(
             'C:\Android',
             'C:\Users\runneradmin\AppData\Local\Android',
