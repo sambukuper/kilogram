@@ -109,7 +109,7 @@ private:
 	webrtc::AudioTransport *_realTransport = nullptr;
 };
 
-class VolumeAudioDeviceModule final : public webrtc::AudioDeviceModule {
+class VolumeAudioDeviceModule : public webrtc::AudioDeviceModule {
 public:
 	VolumeAudioDeviceModule(
 		rtc::scoped_refptr<webrtc::AudioDeviceModule> impl,
