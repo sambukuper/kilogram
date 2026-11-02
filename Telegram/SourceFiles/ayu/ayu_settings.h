@@ -385,6 +385,8 @@ public:
 	void setCallMuteHotkey(const QString &val);
 	void setCallMuteSoundEnabled(bool val);
 	void setCallMuteSoundVolume(int val);
+	void setPeerCallVolume(uint64_t peerId, int val);
+	[[nodiscard]] int peerCallVolume(uint64_t peerId) const;
 	void setSimpleQuotesAndReplies(bool val);
 	void setHideFastShare(bool val);
 	void setReplaceBottomInfoWithIcons(bool val);
@@ -667,6 +669,7 @@ private:
 	rpl::variable<QString> _callMuteHotkey;
 	rpl::variable<bool> _callMuteSoundEnabled = true;
 	rpl::variable<int> _callMuteSoundVolume = 100;
+	std::map<uint64_t, int> _peerCallVolumes;
 	rpl::variable<bool> _simpleQuotesAndReplies = false;
 	rpl::variable<bool> _hideFastShare = false;
 	rpl::variable<bool> _replaceBottomInfoWithIcons = true;

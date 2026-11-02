@@ -39,6 +39,8 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 
 // AyuGram includes
 #include "ayu/features/call_hotkey/call_hotkey.h"
+#include "ayu/features/call_volume/call_volume_adm_wrapper.h"
+#include "ayu/ayu_settings.h"
 
 
 namespace tgcalls {
@@ -264,6 +266,7 @@ Call::Call(
 		startWaitingTrack();
 	}
 	setupMediaDevices();
+	setPlaybackVolume(AyuSettings::getInstance().peerCallVolume(_user->id.bare));
 	setupOutgoingVideo();
 }
 
@@ -307,6 +310,7 @@ Call::Call(
 	std::make_unique<Webrtc::VideoTrack>(
 		StartVideoState(video))) {
 	startWaitingTrack();
+	setPlaybackVolume(AyuSettings::getInstance().peerCallVolume(_user->id.bare));
 	setupOutgoingVideo();
 }
 
@@ -751,6 +755,7 @@ void Call::redial() {
 	setState(State::Requesting);
 	_answerAfterDhConfigReceived = false;
 	startWaitingTrack();
+	setPlaybackVolume(AyuSettings::getInstance().peerCallVolume(_user->id.bare));
 	_delegate->callRedial(this);
 }
 
@@ -1220,8 +1225,9 @@ void Call::createAndStartController(const MTPDphoneCall &call) {
 				sendSignalingData(bytes);
 			});
 		},
-		.createAudioDeviceModule = Webrtc::AudioDeviceModuleCreator(
-			saveSetDeviceIdCallback),
+		.createAudioDeviceModule = Ayu::WrapAudioDeviceModuleCreator(
+			Webrtc::AudioDeviceModuleCreator(saveSetDeviceIdCallback),
+			_playbackGain),
 	};
 	if (Logs::DebugEnabled()) {
 		const auto callLogFolder = cWorkingDir() + u"DebugLogs"_q;
@@ -1722,6 +1728,29 @@ void Call::destroyController() {
 		DEBUG_LOG(("Call Info: Call controller destroyed."));
 	}
 	setSignalBarCount(kSignalBarFinished);
+}
+
+void Call::setPlaybackVolume(int volumePercent) {
+	_playbackVolume = std::clamp(volumePercent, 0, 200);
+	auto gain = 1.0f;
+	if (_playbackVolume == 0) {
+		gain = 0.0f;
+	} else if (_playbackVolume <= 100) {
+		gain = _playbackVolume / 100.0f;
+	} else {
+		gain = 1.0f + (_playbackVolume - 100) / 100.0f;
+	}
+	if (_playbackGain) {
+		_playbackGain->store(gain, std::memory_order_relaxed);
+	}
+}
+
+int Call::playbackVolume() const {
+	return _playbackVolume;
+}
+
+std::shared_ptr<std::atomic<float>> Call::playbackGainAtomic() const {
+	return _playbackGain;
 }
 
 Call::~Call() {

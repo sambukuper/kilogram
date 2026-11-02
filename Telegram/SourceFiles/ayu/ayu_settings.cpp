@@ -717,6 +717,18 @@ void AyuSettings::setCallMuteSoundEnabled(bool val) {
 	save();
 }
 
+void AyuSettings::setPeerCallVolume(uint64_t peerId, int val) {
+	const auto clamped = std::clamp(val, 0, 200);
+	if (_peerCallVolumes[peerId] == clamped) return;
+	_peerCallVolumes[peerId] = clamped;
+	save();
+}
+
+int AyuSettings::peerCallVolume(uint64_t peerId) const {
+	const auto it = _peerCallVolumes.find(peerId);
+	return (it != _peerCallVolumes.end()) ? it->second : 100;
+}
+
 void AyuSettings::setCallMuteSoundVolume(int val) {
 	if (_callMuteSoundVolume.current() == val) return;
 	_callMuteSoundVolume = val;
@@ -1188,10 +1200,27 @@ void to_json(nlohmann::json &j, const AyuSettings &s) {
 		{"streamerMode", s._streamerMode.current()},
 		{"messageShotSettings", s._messageShotSettings}
 	};
+	if (!s._peerCallVolumes.empty()) {
+		auto peerVols = nlohmann::json::object();
+		for (const auto &[id, vol] : s._peerCallVolumes) {
+			peerVols[std::to_string(id)] = vol;
+		}
+		j["peerCallVolumes"] = std::move(peerVols);
+	}
 }
 
 void from_json(const nlohmann::json &j, AyuSettings &s) {
 	AyuSettings defaults;
+
+	if (j.contains("peerCallVolumes") && j["peerCallVolumes"].is_object()) {
+		s._peerCallVolumes.clear();
+		for (auto &[key, value] : j["peerCallVolumes"].items()) {
+			try {
+				s._peerCallVolumes[std::stoull(key)] = value.get<int>();
+			} catch (...) {
+			}
+		}
+	}
 
 	if (j.contains("ghostModeSettings") && j["ghostModeSettings"].is_object()) {
 		s._ghostAccounts.clear();

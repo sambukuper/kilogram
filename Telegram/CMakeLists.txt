@@ -232,6 +232,10 @@ set(ayugram_files
         ayu/features/message_shot/message_shot.h
         ayu/features/call_hotkey/call_hotkey.cpp
         ayu/features/call_hotkey/call_hotkey.h
+        ayu/features/call_volume/call_volume_adm_wrapper.cpp
+        ayu/features/call_volume/call_volume_adm_wrapper.h
+        ayu/features/call_volume/call_volume_slider.cpp
+        ayu/features/call_volume/call_volume_slider.h
         ayu/features/message_shot/message_shot_theme_state.cpp
         ayu/features/message_shot/message_shot_theme_state.h
         ayu/features/forward/ayu_forward.cpp

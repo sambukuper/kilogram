@@ -75,6 +75,11 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include <QtCore/QTimer>
 #include <QtSvg/QSvgRenderer>
 
+// AyuGram includes
+#include "ayu/features/call_volume/call_volume_slider.h"
+#include "ayu/ayu_settings.h"
+
+
 namespace Calls {
 namespace {
 
@@ -400,6 +405,22 @@ void Panel::initWidget() {
 void Panel::initControls() {
 	createPinOnTop();
 
+	const auto peerId = _user->id.bare;
+	const auto initialVolume = AyuSettings::getInstance().peerCallVolume(peerId);
+	_peerVolumeSlider = base::make_unique_q<Ayu::CallVolumeSlider>(widget());
+	_peerVolumeSlider->setVolume(initialVolume);
+	if (_call) {
+		_call->setPlaybackVolume(initialVolume);
+	}
+	_peerVolumeSlider->setVolumeChangedCallback([=](int volume) {
+		AyuSettings::getInstance().setPeerCallVolume(peerId, volume);
+		AyuSettings::save();
+		if (_call) {
+			_call->setPlaybackVolume(volume);
+		}
+	});
+	_peerVolumeSlider->show();
+
 	for (const auto &button : bottomButtons()) {
 		setupButtonTooltip(button);
 	}
@@ -666,6 +687,9 @@ void Panel::reinitWithCall(Call *call) {
 		? &st::callBodyWithPreview
 		: &st::callBodyLayout;
 	_call = call;
+	if (_peerVolumeSlider && _call) {
+		_call->setPlaybackVolume(_peerVolumeSlider->volume());
+	}
 	const auto guard = gsl::finally([&] {
 		updateControlsShown();
 	});
@@ -1351,6 +1375,14 @@ void Panel::updateControlsShown() {
 void Panel::updateControlsGeometry() {
 	if (widget()->size().isEmpty()) {
 		return;
+	}
+	if (_peerVolumeSlider) {
+		const auto sliderHeight = 180;
+		const auto sliderWidth = 32;
+		const auto top = (widget()->height() - sliderHeight) / 2;
+		const auto left = widget()->width() - sliderWidth - 12;
+		_peerVolumeSlider->setGeometry(left, top, sliderWidth, sliderHeight);
+		_peerVolumeSlider->raise();
 	}
 	if (_incoming) {
 		refreshIncomingGeometry();

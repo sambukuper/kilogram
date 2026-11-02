@@ -284,6 +284,10 @@ public:
 		return _lifetime;
 	}
 
+	void setPlaybackVolume(int volumePercent);
+	[[nodiscard]] int playbackVolume() const;
+	[[nodiscard]] std::shared_ptr<std::atomic<float>> playbackGainAtomic() const;
+
 	~Call();
 
 private:
@@ -388,6 +392,8 @@ private:
 	bool _videoCaptureIsScreencast = false;
 	bool _screenWithAudio = false;
 	std::unique_ptr<Webrtc::SystemAudioCapture> _systemAudioCapture;
+	std::shared_ptr<std::atomic<float>> _playbackGain = std::make_shared<std::atomic<float>>(1.0f);
+	int _playbackVolume = 100;
 	const std::unique_ptr<Webrtc::VideoTrack> _videoIncoming;
 	const std::unique_ptr<Webrtc::VideoTrack> _videoOutgoing;
 
