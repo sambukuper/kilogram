@@ -24,4 +24,8 @@ void ToggleMicrophoneMute();
 // also used by the settings recording UI.
 [[nodiscard]] std::shared_ptr<base::GlobalShortcutManager> Manager();
 
+// Plays voice audio indicator (TeamSpeak style) for microphone
+// mute (muted = true) or unmute/activated (muted = false).
+void PlayMuteSound(bool muted);
+
 } // namespace AyuFeatures::CallHotkey

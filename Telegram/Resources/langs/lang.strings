@@ -9757,3 +9757,5 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 "ayu_CallMuteHotkey" = "Microphone mute hotkey";
 "ayu_CallMuteHotkeyRecord" = "Press the key combination";
 "ayu_CallMuteHotkeyHint" = "While a call is active, pressing the hotkey toggles your microphone.";
+"ayu_CallMuteSoundEnabled" = "Voice cue on mute / unmute";
+"ayu_CallMuteSoundVolume" = "Voice cue volume";

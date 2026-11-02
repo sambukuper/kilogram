@@ -383,6 +383,8 @@ public:
 	void setShowPrivateChatReactions(bool val);
 	void setAppIcon(const QString &val);
 	void setCallMuteHotkey(const QString &val);
+	void setCallMuteSoundEnabled(bool val);
+	void setCallMuteSoundVolume(int val);
 	void setSimpleQuotesAndReplies(bool val);
 	void setHideFastShare(bool val);
 	void setReplaceBottomInfoWithIcons(bool val);
@@ -503,6 +505,12 @@ public:
 	[[nodiscard]] const QString &callMuteHotkey() const { return _callMuteHotkey.current(); }
 	[[nodiscard]] rpl::producer<QString> callMuteHotkeyValue() const { return _callMuteHotkey.value(); }
 	[[nodiscard]] rpl::producer<QString> callMuteHotkeyChanges() const { return _callMuteHotkey.changes(); }
+	[[nodiscard]] bool callMuteSoundEnabled() const { return _callMuteSoundEnabled.current(); }
+	[[nodiscard]] rpl::producer<bool> callMuteSoundEnabledValue() const { return _callMuteSoundEnabled.value(); }
+	[[nodiscard]] rpl::producer<bool> callMuteSoundEnabledChanges() const { return _callMuteSoundEnabled.changes(); }
+	[[nodiscard]] int callMuteSoundVolume() const { return _callMuteSoundVolume.current(); }
+	[[nodiscard]] rpl::producer<int> callMuteSoundVolumeValue() const { return _callMuteSoundVolume.value(); }
+	[[nodiscard]] rpl::producer<int> callMuteSoundVolumeChanges() const { return _callMuteSoundVolume.changes(); }
 	[[nodiscard]] rpl::producer<bool> simpleQuotesAndRepliesValue() const { return _simpleQuotesAndReplies.value(); }
 	[[nodiscard]] rpl::producer<bool> simpleQuotesAndRepliesChanges() const { return _simpleQuotesAndReplies.changes(); }
 	[[nodiscard]] rpl::producer<bool> hideFastShareValue() const { return _hideFastShare.value(); }
@@ -657,6 +665,8 @@ private:
 	rpl::variable<bool> _showPrivateChatReactions = true;
 	rpl::variable<QString> _appIcon;
 	rpl::variable<QString> _callMuteHotkey;
+	rpl::variable<bool> _callMuteSoundEnabled = true;
+	rpl::variable<int> _callMuteSoundVolume = 100;
 	rpl::variable<bool> _simpleQuotesAndReplies = false;
 	rpl::variable<bool> _hideFastShare = false;
 	rpl::variable<bool> _replaceBottomInfoWithIcons = true;

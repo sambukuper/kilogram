@@ -11,6 +11,7 @@
 #include "calls/calls_instance.h"
 #include "calls/group/calls_group_call.h"
 #include "core/application.h"
+#include "media/audio/media_audio_track.h"
 
 namespace AyuFeatures::CallHotkey {
 namespace {
@@ -39,6 +40,38 @@ std::shared_ptr<base::GlobalShortcutManager> Manager() {
 		manager = base::CreateGlobalShortcutManager();
 	}
 	return manager;
+}
+
+void PlayMuteSound(bool muted) {
+	crl::on_main([=] {
+		const auto &settings = AyuSettings::getInstance();
+		if (!settings.callMuteSoundEnabled()) {
+			return;
+		}
+		const auto volume = settings.callMuteSoundVolume();
+		if (volume <= 0) {
+			return;
+		}
+		static std::unique_ptr<Media::Audio::Track> activatedTrack;
+		static std::unique_ptr<Media::Audio::Track> mutedTrack;
+		static auto hooked = false;
+		if (!hooked) {
+			hooked = true;
+			Core::App().lifetime().add([] {
+				activatedTrack.reset();
+				mutedTrack.reset();
+			});
+		}
+		auto &track = muted ? mutedTrack : activatedTrack;
+		if (!track) {
+			track = Media::Audio::Current().createTrack();
+			track->fillFromFile(muted
+				? u":/sounds/mic_muted.mp3"_q
+				: u":/sounds/mic_activated.mp3"_q);
+		}
+		const auto gain = std::clamp(float64(volume) / 100.0, 0.001, 1.0);
+		track->playOnce(gain);
+	});
 }
 
 void ToggleMicrophoneMute() {

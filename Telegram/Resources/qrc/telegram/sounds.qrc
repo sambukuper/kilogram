@@ -11,5 +11,7 @@
     <file alias="group_call_end.mp3">../../sounds/group_call_end.mp3</file>
     <file alias="group_call_allowed.mp3">../../sounds/group_call_allowed.mp3</file>
     <file alias="group_call_recording_start.mp3">../../sounds/group_call_recording_start.mp3</file>
+    <file alias="mic_activated.mp3">../../sounds/mic_activated.mp3</file>
+    <file alias="mic_muted.mp3">../../sounds/mic_muted.mp3</file>
   </qresource>
 </RCC>

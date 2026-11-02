@@ -37,6 +37,10 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include <tgcalls/VideoCaptureInterface.h>
 #include <tgcalls/StaticThreads.h>
 
+// AyuGram includes
+#include "ayu/features/call_hotkey/call_hotkey.h"
+
+
 namespace tgcalls {
 class InstanceImpl;
 class InstanceV2Impl;
@@ -537,9 +541,13 @@ rpl::producer<Webrtc::DeviceResolvedId> Call::captureMuteDeviceId() {
 }
 
 void Call::setMuted(bool mute) {
+	if (_muted == mute) {
+		return;
+	}
 	_muted = mute;
 	if (_instance) {
 		_instance->setMuteMicrophone(mute);
+		AyuFeatures::CallHotkey::PlayMuteSound(mute);
 	}
 }
 

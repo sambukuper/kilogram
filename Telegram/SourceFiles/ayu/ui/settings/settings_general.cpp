@@ -158,7 +158,7 @@ void BuildShowPeerId(SectionBuilder &builder) {
 	});
 }
 
-void BuildCallHotkey(SectionBuilder &builder);
+void BuildCallHotkey(SectionBuilder &builder, AyuSectionBuilder &ayu);
 
 void BuildQoLToggles(SectionBuilder &builder, AyuSectionBuilder &ayu) {
 	auto *settings = &AyuSettings::getInstance();
@@ -278,7 +278,7 @@ void BuildQoLToggles(SectionBuilder &builder, AyuSectionBuilder &ayu) {
 
 	BuildShowPeerId(builder);
 
-	BuildCallHotkey(builder);
+	BuildCallHotkey(builder, ayu);
 
 	ayu.addSectionDivider();
 
@@ -310,12 +310,10 @@ void BuildQoLToggles(SectionBuilder &builder, AyuSectionBuilder &ayu) {
 	});
 }
 
-void BuildCallHotkey(SectionBuilder &builder) {
-	if (!base::GlobalShortcutsAvailable()) {
-		return;
-	}
-
+void BuildCallHotkey(SectionBuilder &builder, AyuSectionBuilder &ayu) {
 	builder.addSubsectionTitle(tr::ayu_CallHotkeySection());
+
+	if (base::GlobalShortcutsAvailable()) {
 
 	struct State {
 		rpl::variable<QString> recordText;
@@ -394,7 +392,33 @@ void BuildCallHotkey(SectionBuilder &builder) {
 		}
 	});
 
-	builder.addDividerText(tr::ayu_CallMuteHotkeyHint());
+		builder.addDividerText(tr::ayu_CallMuteHotkeyHint());
+	}
+
+	ayu.addSettingToggle({
+		.id = u"ayu/callMuteSoundEnabled"_q,
+		.title = tr::ayu_CallMuteSoundEnabled(),
+		.getter = &AyuSettings::callMuteSoundEnabled,
+		.setter = &AyuSettings::setCallMuteSoundEnabled,
+	});
+
+	ayu.addSlider({
+		.id = u"ayu/callMuteSoundVolume"_q,
+		.title = tr::ayu_CallMuteSoundVolume(),
+		.steps = 101,
+		.current = AyuSettings::getInstance().callMuteSoundVolume(),
+		.indexToValue = [](int index) { return index; },
+		.onChanged = [=](int val) {
+			AyuSettings::getInstance().setCallMuteSoundVolume(val);
+		},
+		.onFinalChanged = [=](int val) {
+			AyuSettings::getInstance().setCallMuteSoundVolume(val);
+			AyuFeatures::CallHotkey::PlayMuteSound(false);
+		},
+		.formatLabel = [](int val) {
+			return QString::number(val) + u"%"_q;
+		},
+	});
 }
 
 const auto kMeta = BuildHelper({

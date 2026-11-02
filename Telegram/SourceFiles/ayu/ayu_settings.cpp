@@ -711,6 +711,18 @@ void AyuSettings::setCallMuteHotkey(const QString &val) {
 	save();
 }
 
+void AyuSettings::setCallMuteSoundEnabled(bool val) {
+	if (_callMuteSoundEnabled.current() == val) return;
+	_callMuteSoundEnabled = val;
+	save();
+}
+
+void AyuSettings::setCallMuteSoundVolume(int val) {
+	if (_callMuteSoundVolume.current() == val) return;
+	_callMuteSoundVolume = val;
+	save();
+}
+
 void AyuSettings::setSimpleQuotesAndReplies(bool val) {
 	if (_simpleQuotesAndReplies.current() == val) return;
 	_simpleQuotesAndReplies = val;
@@ -1114,6 +1126,8 @@ void to_json(nlohmann::json &j, const AyuSettings &s) {
 		{"showPrivateChatReactions", s._showPrivateChatReactions.current()},
 		{"appIcon", s._appIcon.current()},
 		{"callMuteHotkey", s._callMuteHotkey.current()},
+		{"callMuteSoundEnabled", s._callMuteSoundEnabled.current()},
+		{"callMuteSoundVolume", s._callMuteSoundVolume.current()},
 		{"simpleQuotesAndReplies", s._simpleQuotesAndReplies.current()},
 		{"hideFastShare", s._hideFastShare.current()},
 		{"replaceBottomInfoWithIcons", s._replaceBottomInfoWithIcons.current()},
@@ -1219,6 +1233,8 @@ void from_json(const nlohmann::json &j, AyuSettings &s) {
 	s._showPrivateChatReactions = j.value("showPrivateChatReactions", defaults._showPrivateChatReactions.current());
 	s._appIcon = j.value("appIcon", defaults._appIcon.current());
 	s._callMuteHotkey = j.value("callMuteHotkey", defaults._callMuteHotkey.current());
+	s._callMuteSoundEnabled = j.value("callMuteSoundEnabled", defaults._callMuteSoundEnabled.current());
+	s._callMuteSoundVolume = j.value("callMuteSoundVolume", defaults._callMuteSoundVolume.current());
 	s._simpleQuotesAndReplies = j.value("simpleQuotesAndReplies", defaults._simpleQuotesAndReplies.current());
 	s._hideFastShare = j.value("hideFastShare", defaults._hideFastShare.current());
 	s._replaceBottomInfoWithIcons = j.value("replaceBottomInfoWithIcons", defaults._replaceBottomInfoWithIcons.current());

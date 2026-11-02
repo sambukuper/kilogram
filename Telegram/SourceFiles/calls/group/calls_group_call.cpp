@@ -47,6 +47,10 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include <QtCore/QJsonObject>
 #include <QtCore/QJsonArray>
 
+// AyuGram includes
+#include "ayu/features/call_hotkey/call_hotkey.h"
+
+
 namespace Calls {
 namespace {
 
@@ -2311,6 +2315,13 @@ void GroupCall::setMuted(MuteState mute) {
 		const auto nowRaiseHand = (now == MuteState::RaisedHand);
 		if (wasMuted != nowMuted || wasRaiseHand != nowRaiseHand) {
 			applyMeInCallLocally();
+		}
+		if (_initialMuteStateSent) {
+			if (was == MuteState::Muted && now == MuteState::Active) {
+				AyuFeatures::CallHotkey::PlayMuteSound(false);
+			} else if (was == MuteState::Active && now == MuteState::Muted) {
+				AyuFeatures::CallHotkey::PlayMuteSound(true);
+			}
 		}
 		if (mutedByAdmin()) {
 			toggleVideo(false);

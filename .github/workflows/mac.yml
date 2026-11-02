@@ -59,7 +59,7 @@ jobs:
       UPLOAD_ARTIFACT: "true"
       ONLY_CACHE: "false"
       PREPARE_PATH: "Telegram/build/prepare/prepare.py"
-      CMAKE_CONFIG: ${{ (startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch') && 'Release' || 'Debug' }}
+      CMAKE_CONFIG: Release
       TDESKTOP_API_ID: ${{ secrets.TDESKTOP_API_ID || '17349' }}
       TDESKTOP_API_HASH: ${{ secrets.TDESKTOP_API_HASH || '344583e45741c457fe1862106095a5eb' }}
 
