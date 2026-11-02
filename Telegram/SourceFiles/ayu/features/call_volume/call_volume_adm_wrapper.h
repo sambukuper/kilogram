@@ -6,8 +6,8 @@
 // Copyright @Radolyn, 2026
 #pragma once
 
-#include <modules/audio_device/include/audio_device.h>
-#include <api/scoped_refptr.h>
+#include "webrtc/webrtc_create_adm.h"
+
 #include <atomic>
 #include <memory>
 #include <functional>
@@ -16,13 +16,13 @@ namespace Ayu {
 
 void ApplyVolumeWithLimiter(int16_t *samples, size_t count, float gain);
 
-[[nodiscard]] rtc::scoped_refptr<webrtc::AudioDeviceModule> WrapAudioDeviceModule(
-	rtc::scoped_refptr<webrtc::AudioDeviceModule> impl,
+[[nodiscard]] Webrtc::AudioDeviceModulePtr WrapAudioDeviceModule(
+	Webrtc::AudioDeviceModulePtr impl,
 	std::shared_ptr<std::atomic<float>> gain);
 
 [[nodiscard]] auto WrapAudioDeviceModuleCreator(
-	std::function<rtc::scoped_refptr<webrtc::AudioDeviceModule>(webrtc::TaskQueueFactory*)> creator,
+	std::function<Webrtc::AudioDeviceModulePtr(webrtc::TaskQueueFactory*)> creator,
 	std::shared_ptr<std::atomic<float>> gain)
--> std::function<rtc::scoped_refptr<webrtc::AudioDeviceModule>(webrtc::TaskQueueFactory*)>;
+-> std::function<Webrtc::AudioDeviceModulePtr(webrtc::TaskQueueFactory*)>;
 
 } // namespace Ayu

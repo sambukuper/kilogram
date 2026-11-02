@@ -88,6 +88,7 @@ PRIVATE
     tdesktop::td_ui
     tdesktop::td_webauthn
     desktop-app::lib_webrtc
+    desktop-app::external_webrtc
     desktop-app::lib_base
     desktop-app::lib_crl
     desktop-app::lib_ui

@@ -229,8 +229,8 @@ void ApplyVolumeWithLimiter(int16_t *samples, size_t count, float gain) {
 	}
 }
 
-rtc::scoped_refptr<webrtc::AudioDeviceModule> WrapAudioDeviceModule(
-		rtc::scoped_refptr<webrtc::AudioDeviceModule> impl,
+Webrtc::AudioDeviceModulePtr WrapAudioDeviceModule(
+		Webrtc::AudioDeviceModulePtr impl,
 		std::shared_ptr<std::atomic<float>> gain) {
 	if (!impl) {
 		return nullptr;
@@ -239,9 +239,9 @@ rtc::scoped_refptr<webrtc::AudioDeviceModule> WrapAudioDeviceModule(
 }
 
 auto WrapAudioDeviceModuleCreator(
-	std::function<rtc::scoped_refptr<webrtc::AudioDeviceModule>(webrtc::TaskQueueFactory*)> creator,
+	std::function<Webrtc::AudioDeviceModulePtr(webrtc::TaskQueueFactory*)> creator,
 	std::shared_ptr<std::atomic<float>> gain)
--> std::function<rtc::scoped_refptr<webrtc::AudioDeviceModule>(webrtc::TaskQueueFactory*)> {
+-> std::function<Webrtc::AudioDeviceModulePtr(webrtc::TaskQueueFactory*)> {
 	return [creator = std::move(creator), gain = std::move(gain)](webrtc::TaskQueueFactory *factory) {
 		auto adm = creator ? creator(factory) : nullptr;
 		return WrapAudioDeviceModule(std::move(adm), gain);
