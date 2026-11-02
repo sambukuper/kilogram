@@ -266,7 +266,7 @@ Call::Call(
 		startWaitingTrack();
 	}
 	setupMediaDevices();
-	setPlaybackVolume(AyuSettings::getInstance().peerCallVolume(_user->id.bare));
+	setPlaybackVolume(AyuSettings::getInstance().peerCallVolume(peerToUser(_user->id).bare));
 	_noiseSuppression = AyuSettings::getInstance().callNoiseSuppression();
 	setupOutgoingVideo();
 }
@@ -311,7 +311,7 @@ Call::Call(
 	std::make_unique<Webrtc::VideoTrack>(
 		StartVideoState(video))) {
 	startWaitingTrack();
-	setPlaybackVolume(AyuSettings::getInstance().peerCallVolume(_user->id.bare));
+	setPlaybackVolume(AyuSettings::getInstance().peerCallVolume(peerToUser(_user->id).bare));
 	_noiseSuppression = AyuSettings::getInstance().callNoiseSuppression();
 	setupOutgoingVideo();
 }
@@ -757,7 +757,7 @@ void Call::redial() {
 	setState(State::Requesting);
 	_answerAfterDhConfigReceived = false;
 	startWaitingTrack();
-	setPlaybackVolume(AyuSettings::getInstance().peerCallVolume(_user->id.bare));
+	setPlaybackVolume(AyuSettings::getInstance().peerCallVolume(peerToUser(_user->id).bare));
 	_delegate->callRedial(this);
 }
 

@@ -405,7 +405,7 @@ void Panel::initWidget() {
 void Panel::initControls() {
 	createPinOnTop();
 
-	const auto peerId = _user->id.bare;
+	const auto peerId = peerToUser(_user->id).bare;
 	const auto initialVolume = AyuSettings::getInstance().peerCallVolume(peerId);
 	_peerVolumeSlider = base::make_unique_q<::Ayu::CallVolumeSlider>(widget());
 	_peerVolumeSlider->setVolume(initialVolume);
