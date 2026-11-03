@@ -145,6 +145,13 @@ Panel::Panel(not_null<Call*> call)
 		widget(),
 		st::callMicrophoneMute,
 		&st::callMicrophoneUnmute))
+, _deafen(
+	std::in_place,
+	widget(),
+	object_ptr<Ui::CallButton>(
+		widget(),
+		st::callDeafen,
+		&st::callUndeafen))
 , _addPeople(
 	std::in_place,
 	widget(),
@@ -166,6 +173,7 @@ Panel::Panel(not_null<Call*> call)
 	_addPeople->entity()->setAccessibleName(tr::lng_call_add_people(tr::now));
 	_camera->setAccessibleName(tr::lng_call_start_video(tr::now));
 	_mute->entity()->setAccessibleName(tr::lng_call_mute_audio(tr::now));
+	_deafen->entity()->setAccessibleName(tr::lng_call_deafen_audio(tr::now));
 
 	initWindow();
 	initWidget();
@@ -330,7 +338,7 @@ void Panel::initWindow() {
 			return Flag::None | Flag(0);
 		}
 		const auto buttonWidth = st::callCancel.button.width;
-		const auto buttonsWidth = buttonWidth * 4;
+		const auto buttonsWidth = buttonWidth * 5;
 		const auto inControls = (_fingerprint
 			&& _fingerprint->geometry().contains(widgetPoint))
 			|| pinOnTopRect().contains(widgetPoint)
@@ -428,7 +436,31 @@ void Panel::initControls() {
 	_hangupShown = (_call->type() == Type::Outgoing);
 	_mute->entity()->setClickedCallback([=] {
 		if (_call) {
-			_call->setMuted(!_call->muted());
+			if (_call->deafened()) {
+				_call->setDeafened(false);
+				_unmuteOnUndeafen = false;
+				_call->setMuted(false);
+			} else {
+				_call->setMuted(!_call->muted());
+			}
+		}
+	});
+	_deafen->entity()->setClickedCallback([=] {
+		if (_call) {
+			const auto willDeafen = !_call->deafened();
+			if (willDeafen) {
+				_unmuteOnUndeafen = !_call->muted();
+				if (!_call->muted()) {
+					_call->setMuted(true);
+				}
+				_call->setDeafened(true);
+			} else {
+				_call->setDeafened(false);
+				if (_unmuteOnUndeafen) {
+					_unmuteOnUndeafen = false;
+					_call->setMuted(false);
+				}
+			}
 		}
 	});
 	_screencast->entity()->setClickedCallback([=] {
@@ -808,6 +840,17 @@ void Panel::reinitWithCall(Call *call) {
 			: tr::lng_call_mute_audio(tr::now));
 	}, _callLifetime);
 
+	_call->deafenedValue(
+	) | rpl::on_next([=](bool deafened) {
+		_deafen->entity()->setProgress(deafened ? 1. : 0.);
+		_deafen->entity()->setText(deafened
+			? tr::lng_call_undeafen_audio()
+			: tr::lng_call_deafen_audio());
+		_deafen->entity()->setAccessibleName(deafened
+			? tr::lng_call_undeafen_audio(tr::now)
+			: tr::lng_call_deafen_audio(tr::now));
+	}, _callLifetime);
+
 	_call->videoOutgoing()->stateValue(
 	) | rpl::on_next([=] {
 		{
@@ -918,6 +961,7 @@ void Panel::reinitWithCall(Call *call) {
 		_startVideo->raise();
 	}
 	_mute->raise();
+	_deafen->raise();
 	_addPeople->raise();
 
 	_incoming->widget()->lower();
@@ -1145,30 +1189,11 @@ void Panel::showDevicesMenu(
 	controlsShownForce(true);
 	updateControlsShown();
 
-	const auto hasAudio = [&] {
-		for (const auto &item : types) {
-			if (item.type == Webrtc::DeviceType::Capture) {
-				return true;
-			}
-		}
-		return false;
-	}();
-	const auto noiseToggle = (hasAudio && _call)
-		? std::make_optional(NoiseSuppressionToggle{
-			.enabled = _call->noiseSuppression(),
-			.toggled = [=](bool enabled) {
-				_call->setNoiseSuppression(enabled);
-				AyuSettings::getInstance().setCallNoiseSuppression(enabled);
-			},
-		})
-		: std::nullopt;
-
 	_devicesMenu = MakeDeviceSelectionMenu(
 		widget(),
 		&Core::App().mediaDevices(),
 		std::move(types),
-		chosen,
-		noiseToggle);
+		chosen);
 	_devicesMenu->setForcedVerticalOrigin(
 		Ui::PopupMenu::VerticalOrigin::Bottom);
 	_devicesMenu->popup(button->mapToGlobal(QPoint())
@@ -1246,6 +1271,7 @@ void Panel::hideControlsForRating() {
 	_cancel->hide(anim::type::instant);
 	_screencast->hide(anim::type::instant);
 	_mute->hide(anim::type::instant);
+	_deafen->hide(anim::type::instant);
 	_addPeople->hide(anim::type::instant);
 	if (_fingerprint) {
 		_fingerprint->hide();
@@ -1596,7 +1622,8 @@ void Panel::updateHangupGeometry() {
 	_screencast->moveToLeft(_camera->x() - buttonWidth, _buttonsTop);
 	_answerHangupRedial->moveToLeft(cancelLeft + cancelWidth, _buttonsTop);
 	_mute->moveToLeft(_answerHangupRedial->x() + buttonWidth, _buttonsTop);
-	_addPeople->moveToLeft(_mute->x() + buttonWidth, _buttonsTop);
+	_deafen->moveToLeft(_mute->x() + buttonWidth, _buttonsTop);
+	_addPeople->moveToLeft(_deafen->x() + buttonWidth, _buttonsTop);
 	if (_startVideo) {
 		_startVideo->moveToLeft(_camera->x(), _camera->y());
 	}
@@ -1630,6 +1657,7 @@ auto Panel::bottomButtons() const
 		_screencast->entity(),
 		_camera.get(),
 		_mute->entity(),
+		_deafen->entity(),
 		_addPeople->entity(),
 	};
 	if (_startVideo) {
@@ -1872,6 +1900,7 @@ void Panel::stateChanged(State state) {
 		toggleButton(_decline, incomingWaiting);
 		toggleButton(_cancel, (isBusy || isWaitingUser));
 		toggleButton(_mute, !isWaitingUser);
+		toggleButton(_deafen, !isWaitingUser);
 		toggleButton(
 			_screencast,
 			!(isBusy || isWaitingUser || incomingWaiting));

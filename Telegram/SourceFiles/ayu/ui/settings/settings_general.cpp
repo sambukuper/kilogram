@@ -313,87 +313,130 @@ void BuildQoLToggles(SectionBuilder &builder, AyuSectionBuilder &ayu) {
 void BuildCallHotkey(SectionBuilder &builder, AyuSectionBuilder &ayu) {
 	builder.addSubsectionTitle(tr::ayu_CallHotkeySection());
 
+	using HotkeyGetter = const QString &(AyuSettings::*)() const;
+	using HotkeySetter = void (AyuSettings::*)(const QString &);
+
+	const auto addHotkeyRecorder = [&](
+			const QString &id,
+			rpl::producer<QString> baseText,
+			rpl::producer<QString> recordingText,
+			HotkeyGetter getter,
+			HotkeySetter setter) {
+		if (!base::GlobalShortcutsAvailable()) {
+			return;
+		}
+		struct State {
+			rpl::producer<QString> baseText;
+			rpl::producer<QString> recordingText;
+			rpl::variable<QString> recordText;
+			rpl::variable<QString> shortcutText;
+			std::shared_ptr<base::GlobalShortcutManager> manager;
+			base::GlobalShortcut shortcut;
+			bool recording = false;
+		};
+		const auto state = std::make_shared<State>();
+		state->baseText = std::move(baseText);
+		state->recordingText = std::move(recordingText);
+		state->recordText = state->baseText;
+
+		const auto fillFromManager = [=] {
+			const auto serialized = QByteArray::fromBase64(
+				(AyuSettings::getInstance().*getter)().toUtf8());
+			if (serialized.isEmpty()) {
+				state->shortcut = nullptr;
+				state->shortcutText = QString();
+				return;
+			}
+			state->manager = AyuFeatures::CallHotkey::Manager();
+			state->shortcut
+				= state->manager->shortcutFromSerialized(serialized);
+			state->shortcutText = state->shortcut
+				? state->shortcut->toDisplayString()
+				: QString();
+		};
+		fillFromManager();
+
+		const auto applyAndSave = [=](base::GlobalShortcut shortcut) {
+			(AyuSettings::getInstance().*setter)(
+				shortcut
+					? QString::fromLatin1(shortcut->serialize().toBase64())
+					: QString());
+		};
+
+		const auto button = builder.addButton({
+			.id = id,
+			.title = state->recordText.value(),
+			.st = &st::settingsButtonNoIcon,
+			.label = state->shortcutText.value(),
+		});
+		button->lifetime().add([state] {});
+
+		const auto stopRecording = [=] {
+			state->recording = false;
+			state->recordText = state->baseText;
+			state->shortcutText = state->shortcut
+				? state->shortcut->toDisplayString()
+				: QString();
+			if (state->manager) {
+				state->manager->stopRecording();
+			}
+		};
+		const auto startRecording = [=] {
+			if (!base::GlobalShortcutsAllowed()) {
+				return;
+			}
+			state->manager = AyuFeatures::CallHotkey::Manager();
+			state->recording = true;
+			state->recordText = state->recordingText;
+			auto progress = crl::guard(
+				button,
+				[=](base::GlobalShortcut shortcut) {
+					state->shortcutText = shortcut->toDisplayString();
+				});
+			auto done = crl::guard(
+				button,
+				[=](base::GlobalShortcut shortcut) {
+					state->shortcut = shortcut;
+					applyAndSave(shortcut);
+					stopRecording();
+				});
+			state->manager->startRecording(
+				std::move(progress),
+				std::move(done));
+		};
+
+		button->addClickHandler([=] {
+			if (state->recording) {
+				stopRecording();
+			} else {
+				startRecording();
+			}
+		});
+	};
+
 	if (base::GlobalShortcutsAvailable()) {
-
-	struct State {
-		rpl::variable<QString> recordText;
-		rpl::variable<QString> shortcutText;
-		std::shared_ptr<base::GlobalShortcutManager> manager;
-		base::GlobalShortcut shortcut;
-		bool recording = false;
-	};
-	const auto state = std::make_shared<State>();
-	state->recordText = tr::ayu_CallMuteHotkey();
-
-	const auto fillFromManager = [=] {
-		const auto serialized = QByteArray::fromBase64(
-			AyuSettings::getInstance().callMuteHotkey().toUtf8());
-		if (serialized.isEmpty()) {
-			state->shortcut = nullptr;
-			state->shortcutText = QString();
-			return;
-		}
-		state->manager = AyuFeatures::CallHotkey::Manager();
-		state->shortcut = state->manager->shortcutFromSerialized(serialized);
-		state->shortcutText = state->shortcut
-			? state->shortcut->toDisplayString()
-			: QString();
-	};
-	fillFromManager();
-
-	const auto applyAndSave = [=](base::GlobalShortcut shortcut) {
-		AyuSettings::getInstance().setCallMuteHotkey(
-			shortcut
-				? QString::fromLatin1(shortcut->serialize().toBase64())
-				: QString());
-	};
-
-	const auto button = builder.addButton({
-		.id = u"ayu/callMuteHotkey"_q,
-		.title = state->recordText.value(),
-		.st = &st::settingsButtonNoIcon,
-		.label = state->shortcutText.value(),
-	});
-	button->lifetime().add([state] {});
-
-	const auto stopRecording = [=] {
-		state->recording = false;
-		state->recordText = tr::ayu_CallMuteHotkey();
-		state->shortcutText = state->shortcut
-			? state->shortcut->toDisplayString()
-			: QString();
-		if (state->manager) {
-			state->manager->stopRecording();
-		}
-	};
-	const auto startRecording = [=] {
-		if (!base::GlobalShortcutsAllowed()) {
-			return;
-		}
-		state->manager = AyuFeatures::CallHotkey::Manager();
-		state->recording = true;
-		state->recordText = tr::ayu_CallMuteHotkeyRecord();
-		auto progress = crl::guard(button, [=](base::GlobalShortcut shortcut) {
-			state->shortcutText = shortcut->toDisplayString();
-		});
-		auto done = crl::guard(button, [=](base::GlobalShortcut shortcut) {
-			state->shortcut = shortcut;
-			applyAndSave(shortcut);
-			stopRecording();
-		});
-		state->manager->startRecording(std::move(progress), std::move(done));
-	};
-
-	button->addClickHandler([=] {
-		if (state->recording) {
-			stopRecording();
-		} else {
-			startRecording();
-		}
-	});
-
+		addHotkeyRecorder(
+			u"ayu/callMuteHotkey"_q,
+			tr::ayu_CallMuteHotkey(),
+			tr::ayu_CallMuteHotkeyRecord(),
+			&AyuSettings::callMuteHotkey,
+			&AyuSettings::setCallMuteHotkey);
+		addHotkeyRecorder(
+			u"ayu/callDeafenHotkey"_q,
+			tr::ayu_CallDeafenHotkey(),
+			tr::ayu_CallDeafenHotkeyRecord(),
+			&AyuSettings::callDeafenHotkey,
+			&AyuSettings::setCallDeafenHotkey);
 		builder.addDividerText(tr::ayu_CallMuteHotkeyHint());
+		builder.addDividerText(tr::ayu_CallDeafenHotkeyHint());
 	}
+
+	ayu.addSettingToggle({
+		.id = u"ayu/callNoiseSuppression"_q,
+		.title = tr::lng_group_call_noise_suppression(),
+		.getter = &AyuSettings::callNoiseSuppression,
+		.setter = &AyuSettings::setCallNoiseSuppression,
+	});
 
 	ayu.addSettingToggle({
 		.id = u"ayu/callMuteSoundEnabled"_q,

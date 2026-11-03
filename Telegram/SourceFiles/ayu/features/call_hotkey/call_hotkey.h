@@ -13,12 +13,16 @@ namespace AyuFeatures::CallHotkey {
 // a global shortcut watcher. Call once at application startup.
 void Init();
 
-// Re-reads the hotkey setting and (re)applies the global watcher.
+// Re-reads the hotkey settings and (re)applies the global watchers.
 void ApplySetting();
 
 // Toggles microphone mute of the currently active call
 // (regular or group). Does nothing when there is no call.
 void ToggleMicrophoneMute();
+
+// Toggles deafen of the currently active regular call.
+// Does nothing when there is no call.
+void ToggleDeafen();
 
 // The shared global shortcut manager used by the feature,
 // also used by the settings recording UI.

@@ -27,16 +27,10 @@ struct DeviceSelection {
 	rpl::producer<Webrtc::DeviceResolvedId> chosen;
 };
 
-struct NoiseSuppressionToggle {
-	bool enabled = true;
-	Fn<void(bool)> toggled;
-};
-
 [[nodiscard]] base::unique_qptr<Ui::PopupMenu> MakeDeviceSelectionMenu(
 	not_null<Ui::RpWidget*> parent,
 	not_null<Webrtc::Environment*> environment,
 	std::vector<DeviceSelection> types,
-	Fn<void(Webrtc::DeviceType, QString)> choose,
-	std::optional<NoiseSuppressionToggle> noiseSuppression = std::nullopt);
+	Fn<void(Webrtc::DeviceType, QString)> choose);
 
 } // namespace Calls

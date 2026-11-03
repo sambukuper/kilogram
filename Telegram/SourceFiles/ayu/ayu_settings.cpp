@@ -711,6 +711,12 @@ void AyuSettings::setCallMuteHotkey(const QString &val) {
 	save();
 }
 
+void AyuSettings::setCallDeafenHotkey(const QString &val) {
+	if (_callDeafenHotkey.current() == val) return;
+	_callDeafenHotkey = val;
+	save();
+}
+
 void AyuSettings::setCallMuteSoundEnabled(bool val) {
 	if (_callMuteSoundEnabled.current() == val) return;
 	_callMuteSoundEnabled = val;
@@ -1144,6 +1150,7 @@ void to_json(nlohmann::json &j, const AyuSettings &s) {
 		{"showPrivateChatReactions", s._showPrivateChatReactions.current()},
 		{"appIcon", s._appIcon.current()},
 		{"callMuteHotkey", s._callMuteHotkey.current()},
+		{"callDeafenHotkey", s._callDeafenHotkey.current()},
 		{"callMuteSoundEnabled", s._callMuteSoundEnabled.current()},
 		{"callNoiseSuppression", s._callNoiseSuppression.current()},
 		{"callMuteSoundVolume", s._callMuteSoundVolume.current()},
@@ -1269,6 +1276,7 @@ void from_json(const nlohmann::json &j, AyuSettings &s) {
 	s._showPrivateChatReactions = j.value("showPrivateChatReactions", defaults._showPrivateChatReactions.current());
 	s._appIcon = j.value("appIcon", defaults._appIcon.current());
 	s._callMuteHotkey = j.value("callMuteHotkey", defaults._callMuteHotkey.current());
+	s._callDeafenHotkey = j.value("callDeafenHotkey", defaults._callDeafenHotkey.current());
 	s._callMuteSoundEnabled = j.value("callMuteSoundEnabled", defaults._callMuteSoundEnabled.current());
 	s._callNoiseSuppression = j.value("callNoiseSuppression", defaults._callNoiseSuppression.current());
 	s._callMuteSoundVolume = j.value("callMuteSoundVolume", defaults._callMuteSoundVolume.current());

@@ -202,6 +202,7 @@ private:
 	bool _hangupShown = false;
 	bool _conferenceSupported = false;
 	bool _outgoingPreviewInBody = false;
+	bool _unmuteOnUndeafen = false;
 	std::optional<AnswerHangupRedialState> _answerHangupRedialState;
 	Ui::Animations::Simple _hangupShownProgress;
 	base::unique_qptr<Ui::FadeWrap<Ui::CallButton>> _screencast;
@@ -210,6 +211,7 @@ private:
 	base::unique_qptr<Ui::CallButton> _startVideo;
 	base::unique_qptr<Ui::FadeWrap<Ui::CallButton>> _mute;
 	Ui::CallButton *_audioDeviceToggle = nullptr;
+	base::unique_qptr<Ui::FadeWrap<Ui::CallButton>> _deafen;
 	base::unique_qptr<Ui::FadeWrap<Ui::CallButton>> _addPeople;
 	base::unique_qptr<Ui::IconButton> _pinOnTop;
 	object_ptr<Ui::ImportantTooltip> _buttonTooltip = { nullptr };

@@ -383,6 +383,7 @@ public:
 	void setShowPrivateChatReactions(bool val);
 	void setAppIcon(const QString &val);
 	void setCallMuteHotkey(const QString &val);
+	void setCallDeafenHotkey(const QString &val);
 	void setCallMuteSoundEnabled(bool val);
 	void setCallNoiseSuppression(bool val);
 	void setCallMuteSoundVolume(int val);
@@ -508,6 +509,9 @@ public:
 	[[nodiscard]] const QString &callMuteHotkey() const { return _callMuteHotkey.current(); }
 	[[nodiscard]] rpl::producer<QString> callMuteHotkeyValue() const { return _callMuteHotkey.value(); }
 	[[nodiscard]] rpl::producer<QString> callMuteHotkeyChanges() const { return _callMuteHotkey.changes(); }
+	[[nodiscard]] const QString &callDeafenHotkey() const { return _callDeafenHotkey.current(); }
+	[[nodiscard]] rpl::producer<QString> callDeafenHotkeyValue() const { return _callDeafenHotkey.value(); }
+	[[nodiscard]] rpl::producer<QString> callDeafenHotkeyChanges() const { return _callDeafenHotkey.changes(); }
 	[[nodiscard]] bool callMuteSoundEnabled() const { return _callMuteSoundEnabled.current(); }
 	[[nodiscard]] bool callNoiseSuppression() const { return _callNoiseSuppression.current(); }
 	[[nodiscard]] rpl::producer<bool> callNoiseSuppressionValue() const { return _callNoiseSuppression.value(); }
@@ -671,6 +675,7 @@ private:
 	rpl::variable<bool> _showPrivateChatReactions = true;
 	rpl::variable<QString> _appIcon;
 	rpl::variable<QString> _callMuteHotkey;
+	rpl::variable<QString> _callDeafenHotkey;
 	rpl::variable<bool> _callMuteSoundEnabled = true;
 	rpl::variable<bool> _callNoiseSuppression = true;
 	rpl::variable<int> _callMuteSoundVolume = 100;

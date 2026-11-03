@@ -287,8 +287,13 @@ public:
 	void setPlaybackVolume(int volumePercent);
 	[[nodiscard]] int playbackVolume() const;
 	[[nodiscard]] std::shared_ptr<std::atomic<float>> playbackGainAtomic() const;
-	void setNoiseSuppression(bool enabled);
-	[[nodiscard]] bool noiseSuppression() const;
+	void setDeafened(bool deafened);
+	[[nodiscard]] bool deafened() const {
+		return _deafened.current();
+	}
+	[[nodiscard]] auto deafenedValue() const {
+		return _deafened.value();
+	}
 
 	~Call();
 
@@ -397,6 +402,7 @@ private:
 	std::shared_ptr<std::atomic<float>> _playbackGain = std::make_shared<std::atomic<float>>(1.0f);
 	bool _noiseSuppression = true;
 	int _playbackVolume = 100;
+	rpl::variable<bool> _deafened = false;
 	const std::unique_ptr<Webrtc::VideoTrack> _videoIncoming;
 	const std::unique_ptr<Webrtc::VideoTrack> _videoOutgoing;
 

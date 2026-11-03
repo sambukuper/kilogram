@@ -180,6 +180,25 @@ callMicrophoneUnmute: CallButton(callMicrophoneMute) {
 	}
 	bg: callIconBgActive;
 }
+callDeafen: CallButton(callMicrophoneMute) {
+	button: IconButton(callButton) {
+		icon: icon {{ "calls/call_deafen", callIconFg }};
+		ripple: RippleAnimation(defaultRippleAnimation) {
+			color: callMuteRipple;
+		}
+	}
+	bg: callIconBg;
+	outerBg: callMuteRipple;
+}
+callUndeafen: CallButton(callMicrophoneUnmute) {
+	button: IconButton(callButton) {
+		icon: icon {{ "calls/call_deafen_muted", callIconFgActive }};
+		ripple: RippleAnimation(defaultRippleAnimation) {
+			color: callIconActiveRipple;
+		}
+	}
+	bg: callIconBgActive;
+}
 callCameraMute: CallButton(callMicrophoneMute) {
 	button: IconButton(callButton) {
 		icon: icon {{ "calls/call_camera_active", callIconFg }};

@@ -6538,6 +6538,8 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 "lng_call_end_call" = "End Call";
 "lng_call_mute_audio" = "Mute";
 "lng_call_unmute_audio" = "Unmute";
+"lng_call_deafen_audio" = "Deafen";
+"lng_call_undeafen_audio" = "Undeafen";
 "lng_call_accept" = "Accept";
 "lng_call_decline" = "Decline";
 "lng_call_redial" = "Redial";
@@ -9757,5 +9759,8 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 "ayu_CallMuteHotkey" = "Microphone mute hotkey";
 "ayu_CallMuteHotkeyRecord" = "Press the key combination";
 "ayu_CallMuteHotkeyHint" = "While a call is active, pressing the hotkey toggles your microphone.";
+"ayu_CallDeafenHotkey" = "Deafen hotkey";
+"ayu_CallDeafenHotkeyRecord" = "Press the key combination";
+"ayu_CallDeafenHotkeyHint" = "While a call is active, pressing the hotkey silences incoming audio and mutes your microphone.";
 "ayu_CallMuteSoundEnabled" = "Voice cue on mute / unmute";
 "ayu_CallMuteSoundVolume" = "Voice cue volume";

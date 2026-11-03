@@ -1755,15 +1755,19 @@ std::shared_ptr<std::atomic<float>> Call::playbackGainAtomic() const {
 	return _playbackGain;
 }
 
-void Call::setNoiseSuppression(bool enabled) {
-	_noiseSuppression = enabled;
-	if (_instance) {
-		_instance->setIsNoiseSuppressionEnabled(enabled);
+void Call::setDeafened(bool deafened) {
+	if (_deafened.current() == deafened) {
+		return;
 	}
-}
-
-bool Call::noiseSuppression() const {
-	return _noiseSuppression;
+	_deafened = deafened;
+	if (deafened) {
+		// Zero latency, thread-safe: the ADM reads the gain on its own thread.
+		if (_playbackGain) {
+			_playbackGain->store(0.0f, std::memory_order_relaxed);
+		}
+	} else {
+		setPlaybackVolume(_playbackVolume);
+	}
 }
 
 Call::~Call() {

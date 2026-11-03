@@ -28,6 +28,11 @@ base::GlobalShortcut &ShortcutRef() {
 	return shortcut;
 }
 
+base::GlobalShortcut &DeafenShortcutRef() {
+	static base::GlobalShortcut shortcut;
+	return shortcut;
+}
+
 [[nodiscard]] QByteArray DeserializeSetting(const QString &value) {
 	return QByteArray::fromBase64(value.toUtf8());
 }
@@ -78,40 +83,82 @@ void ToggleMicrophoneMute() {
 	}
 }
 
+void ToggleDeafen() {
+	if (const auto call = Core::App().calls().currentCall()) {
+		call->setDeafened(!call->deafened());
+	}
+}
+
 void ApplySetting() {
-	const auto serialized = DeserializeSetting(
-		AyuSettings::getInstance().callMuteHotkey());
 	auto &manager = ManagerRef();
-	auto &shortcut = ShortcutRef();
-	if (serialized.isEmpty()
-		|| !base::GlobalShortcutsAvailable()
-		|| !base::GlobalShortcutsAllowed()) {
-		shortcut = nullptr;
-		manager = nullptr;
-		return;
-	}
-	auto parsed = Manager()->shortcutFromSerialized(serialized);
-	if (!parsed) {
-		shortcut = nullptr;
-		manager = nullptr;
-		return;
-	}
-	if (shortcut && (parsed->serialize() == shortcut->serialize())) {
-		return;
-	}
-	if (shortcut) {
-		manager->stopWatching(shortcut);
-	}
-	shortcut = parsed;
-	manager->startWatching(shortcut, [](bool pressed) {
-		if (pressed) {
-			ToggleMicrophoneMute();
+	auto &muteShortcut = ShortcutRef();
+	auto &deafenShortcut = DeafenShortcutRef();
+
+	const auto hadManager = (manager != nullptr);
+	const auto available = base::GlobalShortcutsAvailable()
+		&& base::GlobalShortcutsAllowed();
+	const auto parse = [&](const QString &setting)
+		-> base::GlobalShortcut {
+		const auto serialized = DeserializeSetting(setting);
+		if (!available || serialized.isEmpty()) {
+			return nullptr;
 		}
-	});
+		return Manager()->shortcutFromSerialized(serialized);
+	};
+	const auto muteParsed = parse(
+		AyuSettings::getInstance().callMuteHotkey());
+	const auto deafenParsed = parse(
+		AyuSettings::getInstance().callDeafenHotkey());
+
+	if (!hadManager) {
+		// A fresh manager owns no watchers, so drop stale handles.
+		muteShortcut = nullptr;
+		deafenShortcut = nullptr;
+	}
+	if (!muteParsed && !deafenParsed) {
+		if (manager) {
+			if (muteShortcut) {
+				manager->stopWatching(muteShortcut);
+			}
+			if (deafenShortcut) {
+				manager->stopWatching(deafenShortcut);
+			}
+		}
+		muteShortcut = nullptr;
+		deafenShortcut = nullptr;
+		manager = nullptr;
+		return;
+	}
+	const auto watch = [&](
+			base::GlobalShortcut &shortcut,
+			const base::GlobalShortcut &parsed,
+			Fn<void()> toggle) {
+		if (shortcut
+			&& (!parsed || parsed->serialize() != shortcut->serialize())) {
+			manager->stopWatching(shortcut);
+			shortcut = nullptr;
+		}
+		if (!shortcut && parsed) {
+			shortcut = parsed;
+			manager->startWatching(shortcut, [toggle = std::move(toggle)](
+					bool pressed) {
+				if (pressed) {
+					toggle();
+				}
+			});
+		}
+	};
+	watch(muteShortcut, muteParsed, ToggleMicrophoneMute);
+	watch(deafenShortcut, deafenParsed, ToggleDeafen);
 }
 
 void Init() {
-	AyuSettings::getInstance().callMuteHotkeyChanges(
+	const auto &settings = AyuSettings::getInstance();
+	settings.callMuteHotkeyChanges(
+	) | rpl::on_next([=] {
+		ApplySetting();
+	}, WatcherLifetime);
+	settings.callDeafenHotkeyChanges(
 	) | rpl::on_next([=] {
 		ApplySetting();
 	}, WatcherLifetime);
