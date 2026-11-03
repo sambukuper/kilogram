@@ -337,7 +337,7 @@ void BuildCallHotkey(SectionBuilder &builder, AyuSectionBuilder &ayu) {
 		const auto state = std::make_shared<State>();
 		state->baseText = std::move(baseText);
 		state->recordingText = std::move(recordingText);
-		state->recordText = state->baseText;
+		state->recordText = rpl::duplicate(state->baseText);
 
 		const auto fillFromManager = [=] {
 			const auto serialized = QByteArray::fromBase64(
@@ -387,7 +387,7 @@ void BuildCallHotkey(SectionBuilder &builder, AyuSectionBuilder &ayu) {
 			}
 			state->manager = AyuFeatures::CallHotkey::Manager();
 			state->recording = true;
-			state->recordText = state->recordingText;
+			state->recordText = rpl::duplicate(state->recordingText);
 			auto progress = crl::guard(
 				button,
 				[=](base::GlobalShortcut shortcut) {
