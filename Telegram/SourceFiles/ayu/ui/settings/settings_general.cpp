@@ -373,7 +373,7 @@ void BuildCallHotkey(SectionBuilder &builder, AyuSectionBuilder &ayu) {
 
 		const auto stopRecording = [=] {
 			state->recording = false;
-			state->recordText = state->baseText;
+			state->recordText = rpl::duplicate(state->baseText);
 			state->shortcutText = state->shortcut
 				? state->shortcut->toDisplayString()
 				: QString();
